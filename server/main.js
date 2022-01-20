@@ -1,15 +1,12 @@
-const Koa = require('koa')
-
+const { APP_PORT } = require('./config/config.default')
+const Koa = require("koa")
+const userRouter = require('./router/user.routes')
+const koaBody = require('koa-body')
 const app = new Koa()
 
-app.use((ctx, next) => {
-    ctx.body = 'hello word111111'
-})
+app.use(koaBody())
+app.use(userRouter.routes())
 
-app.use((ctx, next) => {
-
-})
-
-app.listen(3000, () => {
-    console.log('服务器已启动，地址为：http://localhost:3000')
-})
+app.listen(APP_PORT, () => {
+  console.log("服务器已启动，地址为：http://localhost:" + APP_PORT);
+});

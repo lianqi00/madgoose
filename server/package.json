@@ -11,7 +11,14 @@
   "author": "lianqi00",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^14.2.0",
     "koa": "^2.13.4",
+    "koa-body": "^4.2.0",
+    "koa-router": "^10.1.1",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.13.0"
+  },
+  "devDependencies": {
     "nodemon": "^2.0.15"
   }
 }
