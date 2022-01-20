@@ -1,10 +1,12 @@
 const { DataTypes, UUIDV4 } = require('sequelize')
 const seq = require('../db/seq')
 
+
+
 const User = seq.define('mg_user', {
     uuid: {
         type: DataTypes.UUID,
-        defaultValue: UUIDV4,// 或 Sequelize.UUIDV1
+        defaultValue: UUIDV4
     },
     user_number: {
         type: DataTypes.STRING,
