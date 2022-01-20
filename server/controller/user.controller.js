@@ -4,15 +4,27 @@ class UserController {
         ctx.body = '用户信息11111'
     }
     async register(ctx, next) {
-        const { user_name, password } = ctx.request.body
-        const res = await User.create({ user_name, password })
-        // console.log(res)
+        //验证获得的数据不为空，否则返回400
+        const { user_number, user_name, password, user_type } = ctx.request.body
+        if (!user_number || !user_name || !password || !user_type) {
+            ctx.status = 400
+            ctx.body = {
+                code: '10001',
+                message: '注册信息缺失',
+                result: ''
+            }
+            return
+        }
+        //将数据写入User表，并返回信息
+        const res = await User.create(ctx.request.body)
         ctx.body = {
             code: '0',
             message: '用户注册成功',
             result: {
-                id: res.id,
-                user_name: res.user_name
+                id: res.uuid,
+                user_name: res.user_name,
+                user_class: res.user_class,
+                user_course: res.user_course
             }
         }
 

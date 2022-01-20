@@ -1,23 +1,40 @@
-const { DataTypes } = require('sequelize')
+const { DataTypes, UUIDV4 } = require('sequelize')
 const seq = require('../db/seq')
 
 const User = seq.define('mg_user', {
-    user_name: {
+    uuid: {
+        type: DataTypes.UUID,
+        defaultValue: UUIDV4,// 或 Sequelize.UUIDV1
+    },
+    user_number: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
-        comment: '用户名，不可空，唯一'
+        comment: '学号，不可空，唯一'
+    },
+    user_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: '用户名，不可空'
     },
     password: {
-        type: DataTypes.CHAR(64),
+        type: DataTypes.CHAR(32),
         allowNull: false,
         comment: '用户密码，不可空'
     },
-    is_admin: {
-        type: DataTypes.BOOLEAN,
+    user_type: {
+        type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        comment: '是否为管理员，0为不是，1为是。'
+        comment: '0为学生，1为老师，2为学生。'
+    },
+    user_class: {
+        type: DataTypes.STRING,
+        comment: '用户班级'
+    },
+    user_course: {
+        type: DataTypes.STRING,
+        comment: '用户课程'
     }
 })
 
