@@ -8,6 +8,7 @@ const {
 
 const seq = new Sequelize(MYSQL_BD, MYSQL_USER, MYSQL_PWD, {
     host: MYSQL_HOST,
+    port: MYSQL_PORT,
     dialect: 'mysql',
 })
 

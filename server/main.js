@@ -9,4 +9,4 @@ app.use(userRouter.routes())
 
 app.listen(APP_PORT, () => {
   console.log("服务器已启动，地址为：http://localhost:" + APP_PORT);
-});
+})
