@@ -25,7 +25,7 @@ const User = seq.define('mg_user', {
         comment: '用户名，不可空'
     },
     password: {
-        type: DataTypes.CHAR(32),
+        type: DataTypes.STRING,
         allowNull: false,
         comment: '用户密码，不可空'
     },
