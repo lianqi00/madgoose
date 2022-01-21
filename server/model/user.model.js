@@ -1,6 +1,6 @@
-
+//
 //用户表的数据库模型
-
+//
 //引入数据类型对象和uuid对象
 const { DataTypes, UUIDV4 } = require('sequelize')
 //引入seq

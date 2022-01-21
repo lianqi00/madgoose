@@ -20,7 +20,7 @@ class UserController {
                 message: '查询成功',
                 result: users
             }
-            // console.log(users);
+            console.log(ctx.state.user);
         } catch (error) {
             ctx.status = 400
             ctx.body = {
@@ -83,8 +83,9 @@ class UserController {
     //用户登录功能
     async login(ctx, next) {
         //验证学号密码非空
-        const { user_number, password } = ctx.request.body
-        if (!user_number || !password) {
+        const { user_number } = ctx.request.body
+        const p = ctx.request.body.password
+        if (!user_number || !p) {
             ctx.status = 401
             ctx.body = {
                 code: '10006',
@@ -106,7 +107,7 @@ class UserController {
                 return
             }
             //查询密码是否正确
-            if (!bcrypt.compareSync(password, isUserExi.password)) {
+            if (!bcrypt.compareSync(p, isUserExi.password)) {
                 ctx.status = 401
                 ctx.body = {
                     code: '10005',
@@ -115,20 +116,13 @@ class UserController {
                 }
                 return
             }
-            // isUserExi.password = null
-            // const { password, ...res } = await isUserExi
-            // console.log(isUserExi);
-            const number = isUserExi.user_number
-            const name = isUserExi.user_name
-            const uuid = isUserExi.uuid
-            const type = isUserExi.user_type
-            const res = { number, name, uuid, type }
-            const token = jwt.sign(res, JWT_SECRET, { expiresIn: '1d' })
+            const { id, password, createdAt, updatedAt, ...userInfo } = isUserExi.dataValues
+            const token = jwt.sign(userInfo, JWT_SECRET, { expiresIn: '1d' })
             ctx.body = {
                 code: '0',
                 message: '登录成功',
                 result: {
-                    token
+                    token, userInfo
                 }
             }
         } catch (error) {
