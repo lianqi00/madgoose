@@ -1,8 +1,16 @@
+
+//控制层-关于用户的业务逻辑代码
+
 const User = require('../model/user.model')
+
 class UserController {
+
+    //获取全部用户信息
     async getUserInfo(ctx, next) {
         ctx.body = '用户信息11111'
     }
+
+    //添加用户功能
     async register(ctx, next) {
         //验证获得的数据不为空，否则返回400
         const { user_number, user_name, password, user_type } = ctx.request.body
@@ -29,5 +37,10 @@ class UserController {
         }
 
     }
+    //用户登录功能
+
+    //修改用户信息
+
+    //删除用户
 }
 module.exports = new UserController()

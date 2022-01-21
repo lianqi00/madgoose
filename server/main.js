@@ -1,12 +1,21 @@
+
+//入口文件
+
+//引入环境变量中的端口
 const { APP_PORT } = require('./config/config.default')
+//引入一些库
 const Koa = require("koa")
-const userRouter = require('./router/user.routes')
 const koaBody = require('koa-body')
+//引入一些路由
+const userRouter = require('./router/user.routes')
+//实例化app
 const app = new Koa()
 
+//注册一些中间件
 app.use(koaBody())
 app.use(userRouter.routes())
 
+//监听服务器
 app.listen(APP_PORT, () => {
   console.log("服务器已启动，地址为：http://localhost:" + APP_PORT);
 })

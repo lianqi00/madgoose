@@ -1,3 +1,6 @@
+
+//数据库连接
+
 const Sequelize = require('sequelize')
 const {
     MYSQL_HOST,

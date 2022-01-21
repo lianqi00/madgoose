@@ -1,8 +1,13 @@
+
+//用户表的数据库模型
+
+//引入数据类型对象和uuid对象
 const { DataTypes, UUIDV4 } = require('sequelize')
+//引入seq
 const seq = require('../db/seq')
 
 
-
+//user表
 const User = seq.define('mg_user', {
     uuid: {
         type: DataTypes.UUID,
