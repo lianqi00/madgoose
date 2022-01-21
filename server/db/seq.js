@@ -2,12 +2,13 @@
 //数据库连接
 
 const Sequelize = require('sequelize')
+
 const {
     MYSQL_HOST,
     MYSQL_PORT,
     MYSQL_USER,
     MYSQL_PWD,
-    MYSQL_BD } = require('../config/config.default')
+    MYSQL_BD } = process.env
 
 const seq = new Sequelize(MYSQL_BD, MYSQL_USER, MYSQL_PWD, {
     host: MYSQL_HOST,

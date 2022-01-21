@@ -2,8 +2,12 @@
 //控制层-关于用户的业务逻辑代码
 
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 const User = require('../model/user.model')
+
+
+const { JWT_SECRET } = process.env
 
 class UserController {
 
@@ -16,6 +20,7 @@ class UserController {
                 message: '查询成功',
                 result: users
             }
+            // console.log(users);
         } catch (error) {
             ctx.status = 400
             ctx.body = {
@@ -31,7 +36,8 @@ class UserController {
     async register(ctx, next) {
         //验证获得的数据不为空，否则返回400
         const { user_number, user_name, password, user_type } = ctx.request.body
-        if (!user_number || !user_name || !password || !user_type) {
+        // console.log(user_type)
+        if (!user_number || !user_name || !password) {
             ctx.status = 400
             ctx.body = {
                 code: '10001',
@@ -56,6 +62,7 @@ class UserController {
                     id: res.uuid,
                     user_name: res.user_name,
                     user_number: res.user_number,
+                    user_type: res.user_type,
                     user_class: res.user_class,
                     user_course: res.user_course
                 }
@@ -108,14 +115,24 @@ class UserController {
                 }
                 return
             }
-            isUserExi.password = null
+            // isUserExi.password = null
+            // const { password, ...res } = await isUserExi
+            // console.log(isUserExi);
+            const number = isUserExi.user_number
+            const name = isUserExi.user_name
+            const uuid = isUserExi.uuid
+            const type = isUserExi.user_type
+            const res = { number, name, uuid, type }
+            const token = jwt.sign(res, JWT_SECRET, { expiresIn: '1d' })
             ctx.body = {
                 code: '0',
                 message: '登录成功',
-                result: isUserExi
-
+                result: {
+                    token
+                }
             }
         } catch (error) {
+            console.log(error);
             ctx.status = 500
             ctx.body = {
                 code: '10007',

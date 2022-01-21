@@ -31,7 +31,6 @@ const User = seq.define('mg_user', {
     },
     user_type: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         defaultValue: 0,
         comment: '0为学生，1为老师，2为学生。'
     },
