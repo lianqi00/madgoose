@@ -3,6 +3,7 @@
 
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const Course = require('../model/course.model')
 
 const User = require('../model/user.model')
 
@@ -14,7 +15,7 @@ class UserController {
     //获取全部用户信息
     async getAllUserInfo(ctx, next) {
         try {
-            const users = await User.findAll({ attributes: { exclude: ['password'] } })
+            const users = await User.findAll({ attributes: { exclude: ['password'] }, include: Course })
             ctx.body = {
                 code: '0',
                 message: '查询成功',

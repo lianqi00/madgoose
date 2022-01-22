@@ -5,6 +5,8 @@
 const { DataTypes, UUIDV4 } = require('sequelize')
 //引入seq
 const seq = require('../db/seq')
+//引入course表
+const Course = require('./course.model')
 
 
 //user表
@@ -43,6 +45,8 @@ const User = seq.define('mg_user', {
         comment: '用户课程'
     }
 })
+
+User.belongsTo(Course)
 
 //强制同步数据库（同步表）
 // User.sync({ force: true })

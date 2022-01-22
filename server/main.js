@@ -8,12 +8,14 @@ const Koa = require("koa")
 const koaBody = require('koa-body')
 //引入一些路由
 const userRouter = require('./router/user.routes')
+const courseRouter = require('./router/course.routes')
 //实例化app
 const app = new Koa()
 
 //注册一些中间件
 app.use(koaBody())
 app.use(userRouter.routes())
+app.use(courseRouter.routes())
 
 //监听服务器
 app.listen(APP_PORT, () => {
