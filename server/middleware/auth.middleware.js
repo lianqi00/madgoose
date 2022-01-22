@@ -37,10 +37,10 @@ class AuthMiddleware {
     async isHighLeve(ctx, next) {
         // const user = ctx.state.user
         // console.log(a);
-        const { type } = ctx.state.user
-        // console.log(typeof (type));
-        // console.log(type < 2);
-        if (type < 1) {
+        const { user_type } = ctx.state.user
+        // console.log(user_type);
+        // console.log(user_type < 1);
+        if (user_type < 1) {
             ctx.status = 403
             ctx.body = {
                 code: '10011',
@@ -55,8 +55,8 @@ class AuthMiddleware {
 
     //验证是否是管理员
     async isTeacher(ctx, next) {
-        const { type } = ctx.state.user
-        if (type === 2) {
+        const { user_type } = ctx.state.user
+        if (user_type === 2) {
             await next()
         }
         ctx.status = 403

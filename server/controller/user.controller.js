@@ -20,7 +20,7 @@ class UserController {
                 message: '查询成功',
                 result: users
             }
-            console.log(ctx.state.user);
+            // console.log(ctx.state.user);
         } catch (error) {
             ctx.status = 400
             ctx.body = {
@@ -35,9 +35,9 @@ class UserController {
     //添加用户功能
     async register(ctx, next) {
         //验证获得的数据不为空，否则返回400
-        const { user_number, user_name, password, user_type } = ctx.request.body
+        const { user_number, user_name } = ctx.request.body
         // console.log(user_type)
-        if (!user_number || !user_name || !password) {
+        if (!user_number || !user_name) {
             ctx.status = 400
             ctx.body = {
                 code: '10001',
@@ -48,12 +48,6 @@ class UserController {
         }
         //将数据写入User表，并返回信息
         try {
-            const { password } = ctx.request.body
-            // console.log(password)
-            const salt = bcrypt.genSaltSync(10);
-            const hash = bcrypt.hashSync(password, salt);
-            // console.log(hash)
-            ctx.request.body.password = hash
             const res = await User.create(ctx.request.body)
             ctx.body = {
                 code: '0',
@@ -135,8 +129,81 @@ class UserController {
             }
         }
     }
-    //修改用户信息
+    //修改指定用户信息（除密码）
+    async modUserInfo(ctx, next) {
+        // console.log(ctx.state.user);
+        const { uuid, ...res } = ctx.request.body
+        const { user_number, user_name, user_type, user_class, user_course } = res
+        const whereOpt = { uuid }
+        const newUser = {}
+        user_name && Object.assign(newUser, { user_name })
+        user_number && Object.assign(newUser, { user_number })
+        user_type && Object.assign(newUser, { user_type })
+        user_class && Object.assign(newUser, { user_class })
+        user_course && Object.assign(newUser, { user_course })
+        try {
+            const result = await User.update(newUser, { where: whereOpt })
+            console.log(result);
+            if (result > 0) {
+                ctx.body = {
+                    code: 0,
+                    message: '用户信息修改成功',
+                    result: whereOpt
+                }
+            } else {
+                ctx.status = 500
+                ctx.body = {
+                    code: 10015,
+                    message: '用户信息修改失败',
+                    result: ''
+                }
+            }
+        } catch (error) {
+            ctx.status = 500
+            ctx.body = {
+                code: 10016,
+                message: '用户信息修改失败',
+                result: error
+            }
+            // console.log(error)
+        }
 
+    }
+    //
+    async changePassWord(ctx, next) {
+        const password = ctx.request.body
+        const { uuid } = ctx.state.user
+        const nid = {}
+        nid.uuid = uuid
+        // console.log(nid, password)
+        try {
+            const result = await User.update(password, { where: nid })
+            if (result > 0) {
+                ctx.body = {
+                    code: 0,
+                    message: '密码修改成功',
+                    result: ''
+                }
+            } else {
+                ctx.status = 500
+                ctx.body = {
+                    code: 10022,
+                    message: '密码修改失败',
+                    result: ''
+                }
+            }
+            // console.log(result);
+
+        } catch (error) {
+            ctx.status = 500
+            ctx.body = {
+                code: 10023,
+                message: '密码修改失败',
+                result: error
+            }
+            // console.log(error)
+        }
+    }
     //删除用户
 }
 module.exports = new UserController()
