@@ -1,19 +1,16 @@
-//
-//课程的数据库模型
-//
-//引入数据类型对象和uuid对象
-const { DataTypes, UUIDV4 } = require('sequelize')
-//引入seq
-const seq = require('../db/seq')
+const mongoose = require('mongoose')
 
-const Course = seq.define('mg_course', {
+const { Schema, model } = mongoose
+
+const courseSchema = new Schema({
     course_name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
+        type: String,
+        required: true
+    },
+    course_howk: {
+        type: Schema.Types.ObjectId,
+        ref: 'howk'
     }
-})
-//强制同步数据库（同步表）
-// Course.sync({ force: true })
+}, { timestamps: true })
 
-module.exports = Course
+module.exports = Course = model('course', courseSchema)

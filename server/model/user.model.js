@@ -1,54 +1,35 @@
 //
 //用户表的数据库模型
 //
-//引入数据类型对象和uuid对象
-const { DataTypes, UUIDV4 } = require('sequelize')
-//引入seq
-const seq = require('../db/seq')
-//引入course表
-const Course = require('./course.model')
 
-
-//user表
-const User = seq.define('mg_user', {
-    uuid: {
-        type: DataTypes.UUID,
-        defaultValue: UUIDV4
-    },
+const mongoose = require('mongoose')
+const { Schema, model } = mongoose;
+const userSchema = new Schema({
     user_number: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        comment: '学号，不可空，唯一'
+        type: String,
+        required: true,
+        unique: true
     },
     user_name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        comment: '用户名，不可空'
+        type: String,
+        required: true
     },
     password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        comment: '用户密码，不可空'
+        type: String,
+        required: true
     },
     user_type: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-        comment: '0为学生，1为老师，2为学生。'
+        type: Number,
+        min: 0,
+        max: 2,
+        default: 0
     },
-    user_class: {
-        type: DataTypes.STRING,
-        comment: '用户班级'
-    },
+    user_class: { type: String },
     user_course: {
-        type: DataTypes.STRING,
-        comment: '用户课程'
-    }
-})
+        type: Schema.Types.ObjectId,
+        ref: 'course'
+    },
+}, { timestamps: true }
+)
 
-User.belongsTo(Course)
-
-//强制同步数据库（同步表）
-// User.sync({ force: true })
-
-module.exports = User
+module.exports = User = model('User', userSchema)

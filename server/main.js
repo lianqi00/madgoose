@@ -11,6 +11,8 @@ const userRouter = require('./router/user.routes')
 const courseRouter = require('./router/course.routes')
 //实例化app
 const app = new Koa()
+//连接数据库
+require('./db/mgdb')
 
 //注册一些中间件
 app.use(koaBody())

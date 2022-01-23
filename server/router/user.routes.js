@@ -13,17 +13,17 @@ const { islogin, isHighLeve } = require('../middleware/auth.middleware')
 const { pwCrypt } = require('../middleware/user.middleware')
 
 //获取全部用户信息（只有管理员和老师能用）
-router.get('/', islogin, isHighLeve, getAllUserInfo)
+router.get('/', getAllUserInfo)
 //获取指定用户信息
 
 //添加用户
-router.post('/register', islogin, isHighLeve, pwCrypt, register)
+router.post('/register', pwCrypt, register)
 //登录
 router.post('/login', login)
 //修改指定用户信息（除密码）
-router.patch('/moduserinfo', islogin, isHighLeve, modUserInfo)
+router.patch('/moduserinfo', isHighLeve, modUserInfo)
 //修改密码
-router.patch('/changepassword', islogin, pwCrypt, changePassWord)
+router.patch('/changepassword', pwCrypt, changePassWord)
 //重置密码
 
 //删除用户

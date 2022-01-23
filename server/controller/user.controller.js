@@ -3,8 +3,8 @@
 
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const Course = require('../model/course.model')
 
+// const Course = require('../model/course.model')
 const User = require('../model/user.model')
 
 
@@ -15,7 +15,7 @@ class UserController {
     //获取全部用户信息
     async getAllUserInfo(ctx, next) {
         try {
-            const users = await User.findAll({ attributes: { exclude: ['password'] }, include: Course })
+            const users = await User.find().populate('user_course')
             ctx.body = {
                 code: '0',
                 message: '查询成功',
@@ -48,19 +48,18 @@ class UserController {
             return
         }
         //将数据写入User表，并返回信息
+
+        // console.log(ctx.request.body);
+
+
+
         try {
             const res = await User.create(ctx.request.body)
+            const { password, ...result } = res._doc
             ctx.body = {
                 code: '0',
                 message: '用户注册成功',
-                result: {
-                    id: res.uuid,
-                    user_name: res.user_name,
-                    user_number: res.user_number,
-                    user_type: res.user_type,
-                    user_class: res.user_class,
-                    user_course: res.user_course
-                }
+                result
             }
         } catch (error) {
             // console.log(error)
@@ -75,6 +74,7 @@ class UserController {
 
 
     }
+
     //用户登录功能
     async login(ctx, next) {
         //验证学号密码非空
@@ -130,6 +130,7 @@ class UserController {
             }
         }
     }
+
     //修改指定用户信息（除密码）
     async modUserInfo(ctx, next) {
         // console.log(ctx.state.user);
@@ -170,7 +171,8 @@ class UserController {
         }
 
     }
-    //
+
+    //修改密码
     async changePassWord(ctx, next) {
         const password = ctx.request.body
         const { uuid } = ctx.state.user
