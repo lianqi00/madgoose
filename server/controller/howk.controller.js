@@ -4,6 +4,7 @@ const Howk = require('../model/howk.model')
 
 
 class HowkController {
+    // 添加作业
     async addHowk(ctx, next) {
         console.log(ctx.request.body);
         const result = await Howk.create(ctx.request.body)
@@ -28,5 +29,8 @@ class HowkController {
 
 
     }
+    //上传作业
+
+
 }
 module.exports = new HowkController()

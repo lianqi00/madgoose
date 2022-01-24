@@ -57,7 +57,7 @@ class AuthMiddleware {
     async isTeacher(ctx, next) {
         const { user_type } = ctx.state.user
         if (user_type === 2) {
-            await next()
+            return await next()
         }
         ctx.status = 403
         ctx.body = {

@@ -20,8 +20,6 @@ const { pwCrypt } = require('../middleware/user.middleware')
 
 //获取全部用户信息（只有管理员和老师能用）
 router.get('/', islogin, getUserInfo)
-//获取指定用户信息
-
 //添加用户
 router.post('/register', pwCrypt, register)
 //登录
@@ -33,8 +31,6 @@ router.patch('/changepassword', islogin, pwCrypt, changePassWord)
 //重置密码
 router.get('/resetpassword', resetPassWord)
 //删除用户
-
-
 
 
 module.exports = router
