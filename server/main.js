@@ -9,6 +9,7 @@ const koaBody = require('koa-body')
 //引入一些路由
 const userRouter = require('./router/user.routes')
 const courseRouter = require('./router/course.routes')
+const howkRouter = require('./router/howk.routes')
 //实例化app
 const app = new Koa()
 //连接数据库
@@ -18,6 +19,7 @@ require('./db/mgdb')
 app.use(koaBody())
 app.use(userRouter.routes())
 app.use(courseRouter.routes())
+app.use(howkRouter.routes())
 
 //监听服务器
 app.listen(APP_PORT, () => {

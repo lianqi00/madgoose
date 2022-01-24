@@ -4,7 +4,6 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
-// const Course = require('../model/course.model')
 const User = require('../model/user.model')
 
 
@@ -13,9 +12,21 @@ const { JWT_SECRET } = process.env
 class UserController {
 
     //获取全部用户信息
-    async getAllUserInfo(ctx, next) {
+    async getUserInfo(ctx, next) {
+        console.log(ctx.state.user);
+        const { _id, user_type } = ctx.state.user
+
+        const fil = {}
+        if (user_type < 1) { fil._id = _id }
+        console.log(fil);
+
         try {
-            const users = await User.find().populate('user_course')
+            const users = await User.find(fil)
+                .populate(
+                    {
+                        path: 'user_course',
+                        populate: { path: 'course_howk' }
+                    })
             ctx.body = {
                 code: '0',
                 message: '查询成功',
@@ -29,6 +40,7 @@ class UserController {
                 message: '查询失败',
                 result: error
             }
+            console.log(error);
         }
 
     }
@@ -48,11 +60,7 @@ class UserController {
             return
         }
         //将数据写入User表，并返回信息
-
         // console.log(ctx.request.body);
-
-
-
         try {
             const res = await User.create(ctx.request.body)
             const { password, ...result } = res._doc
@@ -91,7 +99,7 @@ class UserController {
         }
         //查询用户名是否存在
         try {
-            const isUserExi = await User.findOne({ where: { user_number } })
+            const isUserExi = await User.findOne({ user_number }).select('+password').setOptions({ lean: true })
             if (!isUserExi) {
                 ctx.status = 401
                 ctx.body = {
@@ -111,7 +119,8 @@ class UserController {
                 }
                 return
             }
-            const { id, password, createdAt, updatedAt, ...userInfo } = isUserExi.dataValues
+            const { password, createdAt, updatedAt, ...userInfo } = isUserExi
+            // console.log(isUserExi);
             const token = jwt.sign(userInfo, JWT_SECRET, { expiresIn: '1d' })
             ctx.body = {
                 code: '0',
@@ -121,7 +130,7 @@ class UserController {
                 }
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             ctx.status = 500
             ctx.body = {
                 code: '10007',
@@ -134,31 +143,24 @@ class UserController {
     //修改指定用户信息（除密码）
     async modUserInfo(ctx, next) {
         // console.log(ctx.state.user);
-        const { uuid, ...res } = ctx.request.body
+        const { _id, ...res } = ctx.request.body
+        // console.log(res);
         const { user_number, user_name, user_type, user_class, user_course } = res
-        const whereOpt = { uuid }
+        // console.log(user_course);
         const newUser = {}
         user_name && Object.assign(newUser, { user_name })
         user_number && Object.assign(newUser, { user_number })
         user_type && Object.assign(newUser, { user_type })
         user_class && Object.assign(newUser, { user_class })
         user_course && Object.assign(newUser, { user_course })
+        // console.log(newUser);
         try {
-            const result = await User.update(newUser, { where: whereOpt })
+            const result = await User.findOneAndUpdate({ _id }, newUser, { lean: true, new: true })
             console.log(result);
-            if (result > 0) {
-                ctx.body = {
-                    code: 0,
-                    message: '用户信息修改成功',
-                    result: whereOpt
-                }
-            } else {
-                ctx.status = 500
-                ctx.body = {
-                    code: 10015,
-                    message: '用户信息修改失败',
-                    result: ''
-                }
+            ctx.body = {
+                code: 0,
+                message: '信息修改成功',
+                result
             }
         } catch (error) {
             ctx.status = 500
@@ -174,28 +176,18 @@ class UserController {
 
     //修改密码
     async changePassWord(ctx, next) {
+        // console.log(ctx.state.user);
         const password = ctx.request.body
-        const { uuid } = ctx.state.user
-        const nid = {}
-        nid.uuid = uuid
+        const { _id } = ctx.state.user
         // console.log(nid, password)
         try {
-            const result = await User.update(password, { where: nid })
-            if (result > 0) {
-                ctx.body = {
-                    code: 0,
-                    message: '密码修改成功',
-                    result: ''
-                }
-            } else {
-                ctx.status = 500
-                ctx.body = {
-                    code: 10022,
-                    message: '密码修改失败',
-                    result: ''
-                }
+            const result = await User.findOneAndUpdate(_id, password)
+            console.log(result);
+            ctx.body = {
+                code: 0,
+                message: '密码修改成功',
+                result
             }
-            // console.log(result);
 
         } catch (error) {
             ctx.status = 500
@@ -208,5 +200,54 @@ class UserController {
         }
     }
     //删除用户
+
+    //重置密码
+    async resetPassWord(ctx, next) {
+        // console.log(ctx.query._id)
+        const { _id } = ctx.query
+        if (!_id) {
+            ctx.status = 403
+            ctx.body = {
+                code: 10027,
+                message: '用户id不能为空'
+            }
+            return
+        }
+        try {
+            const user = await User.findOne({ _id })
+            if (!user) {
+                ctx.status = 500
+                ctx.body = {
+                    code: 10028,
+                    message: '查无此人',
+                    result: ''
+                }
+                return
+            }
+            // console.log(user);
+            // console.log(_id)
+            const password = user.user_number
+            const salt = bcrypt.genSaltSync(10);
+            const hash = bcrypt.hashSync(password, salt);
+            const result = await User.findOneAndUpdate({ _id }, { password: hash })
+            // console.log(result);
+            ctx.body = {
+                code: 0,
+                message: '重置密码成功',
+                result
+            }
+        } catch (error) {
+            ctx.status = 500
+            ctx.body = {
+                code: 10029,
+                message: '数据库错误',
+                result: error
+            }
+        }
+
+        // console.log(user.user_number);
+
+
+    }
 }
 module.exports = new UserController()
