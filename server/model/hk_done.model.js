@@ -13,7 +13,7 @@ const hk_doneSchema = new Schema({
         ref: 'howk',
         required: true
     },
-    hk_done_url: {
+    hk_done_id: {
         type: String,
         required: true
     },

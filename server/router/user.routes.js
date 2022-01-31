@@ -4,7 +4,7 @@
 
 
 const Router = require('koa-router')
-const router = new Router({ prefix: '/user' })
+const router = new Router({ prefix: '/api/user' })
 
 //引入控制层里写的中间件
 const {
@@ -19,7 +19,7 @@ const { islogin, isHighLeve } = require('../middleware/auth.middleware')
 const { pwCrypt } = require('../middleware/user.middleware')
 
 //获取全部用户信息（只有管理员和老师能用）
-router.get('/', islogin, getUserInfo)
+router.get('/', getUserInfo)
 //添加用户
 router.post('/register', pwCrypt, register)
 //登录

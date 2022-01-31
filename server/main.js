@@ -6,20 +6,31 @@ const { APP_PORT } = require('./config/config.default')
 //引入一些库
 const Koa = require("koa")
 const koaBody = require('koa-body')
+const cors = require('koa2-cors');
 //引入一些路由
-const userRouter = require('./router/user.routes')
-const courseRouter = require('./router/course.routes')
-const howkRouter = require('./router/howk.routes')
+const router = require('./router')
+const path = require('path/posix')
+// const { allowedMethods } = require('./router')
+// const userRouter = require('./router/user.routes')
+// const courseRouter = require('./router/course.routes')
+// const howkRouter = require('./router/howk.routes')
 //实例化app
 const app = new Koa()
 //连接数据库
 require('./db/mgdb')
 
+app.use(cors());
+
 //注册一些中间件
-app.use(koaBody())
-app.use(userRouter.routes())
-app.use(courseRouter.routes())
-app.use(howkRouter.routes())
+app.use(koaBody({
+  multipart: true,
+  formidable: {
+    uploadDir: path.join(__dirname, './upload'),
+    keepExtensions: true
+  }
+}))
+app.use(router.routes())
+app.use(router.allowedMethods())
 
 //监听服务器
 app.listen(APP_PORT, () => {

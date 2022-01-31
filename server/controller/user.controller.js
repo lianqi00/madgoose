@@ -181,8 +181,8 @@ class UserController {
         const { _id } = ctx.state.user
         // console.log(nid, password)
         try {
-            const result = await User.findOneAndUpdate(_id, password)
-            console.log(result);
+            const result = await User.findOneAndUpdate({ _id }, password)
+            // console.log(result);
             ctx.body = {
                 code: 0,
                 message: '密码修改成功',

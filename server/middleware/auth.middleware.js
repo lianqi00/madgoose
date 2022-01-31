@@ -7,16 +7,19 @@ class AuthMiddleware {
     //验证是否登录，登录的话就像state.user中放入用户信息
     async islogin(ctx, next) {
         const { authorization } = ctx.request.header
-        if (!authorization || authorization === undefined) {
-            ctx.status = 401
-            ctx.body = {
-                code: '10008',
-                message: '未登录',
-                result: ''
-            }
-            return
-        }
-        const token = authorization.replace('Bearer ', '')
+        const token = String(authorization || '').split(' ').pop()
+        // console.log(authorization);
+        // if (!authorization || authorization === undefined) {
+        //     ctx.status = 401
+        //     ctx.body = {
+        //         code: '10008',
+        //         message: '未登录',
+        //         result: ''
+        //     }
+        //     return
+        // }
+        // const token = authorization.replace('Bearer ', '')
+        // console.log(token);
         try {
             const user = jwt.verify(token, JWT_SECRET)
             ctx.state.user = user

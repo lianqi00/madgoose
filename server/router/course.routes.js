@@ -1,6 +1,6 @@
 const Router = require('koa-router')
 
-const router = new Router({ prefix: '/course' })
+const router = new Router({ prefix: '/api/course' })
 
 const { addCourse, courseAddHowk } = require('../controller/course.controller')
 
