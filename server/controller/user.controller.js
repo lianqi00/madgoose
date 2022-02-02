@@ -13,12 +13,12 @@ class UserController {
 
     //获取全部用户信息
     async getUserInfo(ctx, next) {
-        console.log(ctx.state.user);
+        // console.log(ctx.state.user);
         const { _id, user_type } = ctx.state.user
 
         const fil = {}
         if (user_type < 1) { fil._id = _id }
-        console.log(fil);
+        // console.log(fil);
 
         try {
             const users = await User.find(fil)
@@ -27,14 +27,21 @@ class UserController {
                         path: 'user_course',
                         populate: { path: 'course_howk' }
                     })
+            let newayy = []
+            users.forEach(e => {
+                console.log(e);
+                if (e.user_type < 1) {
+                    newayy.push(e)
+                }
+            })
             ctx.body = {
                 code: '0',
                 message: '查询成功',
-                result: users
+                result: newayy
             }
             // console.log(ctx.state.user);
         } catch (error) {
-            ctx.status = 400
+            ctx.status = 500
             ctx.body = {
                 code: '10003',
                 message: '查询失败',
@@ -44,7 +51,16 @@ class UserController {
         }
 
     }
-
+    //根据token获取用户信息
+    async getFetchInfo(ctx, next) {
+        // console.log(ctx.query);
+        // console.log(ctx.state.user);
+        ctx.body = {
+            code: 0,
+            message: 'fetch成功',
+            result: ctx.state.user
+        }
+    }
     //添加用户功能
     async register(ctx, next) {
         //验证获得的数据不为空，否则返回400

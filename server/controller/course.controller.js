@@ -6,6 +6,7 @@ const Course = require('../model/course.model')
 class CourseController {
     //添加课程
     async addCourse(ctx, next) {
+        // console.log(ctx.request.body);
         try {
             const result = await Course.create(ctx.request.body)
             ctx.body = {
@@ -53,6 +54,27 @@ class CourseController {
                 }
         }
 
+    }
+    //查询课程
+    async getHowk(ctx, next) {
+        const result = await Course.find({}).populate({ path: "course_howk" })
+        ctx.body = {
+            code: 0,
+            message: '课程获取成功',
+            result
+        }
+    }
+    //删除课程
+    async deleCourse(ctx, next) {
+        console.log(1);
+        console.log(ctx.query);
+        const { _id } = ctx.query
+        const result = await Course.deleteOne({ _id })
+        ctx.body = {
+            code: 0,
+            message: '删除成功',
+            result
+        }
     }
 }
 module.exports = new CourseController()

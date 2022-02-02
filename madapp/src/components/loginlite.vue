@@ -1,15 +1,20 @@
 <template>
   <div class="loginlite">
-    <el-card>
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="学号">
-          <el-input v-model="form.user_number"></el-input>
-        </el-form-item>
-        <el-form-item label="密码">
-          <el-input v-model="form.password" type="password"></el-input>
-        </el-form-item>
-      </el-form>
-      <el-button @click="login">登录</el-button>
+    <el-card align="center">
+      <div style="width: 300px">
+        <el-form ref="form" :model="form">
+          <el-form-item label="学号">
+            <el-input v-model="form.user_number"></el-input>
+          </el-form-item>
+          <el-form-item label="密码">
+            <el-input v-model="form.password" type="password"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+
+      <div align="center">
+        <el-button @click="login">登录</el-button>
+      </div>
     </el-card>
   </div>
 </template>
@@ -31,12 +36,18 @@ export default {
         })
       }
       this.$http.post('/user/login', this.form).then((res) => {
-        console.log(res)
+        // console.log(res)
+        if (!res) {
+          return
+        }
         this.$message({
           type: 'success',
           message: res.data.message,
         })
         sessionStorage.token = res.data.result.token
+        console.log(res.data.result.userInfo)
+        this.bus.$emit('toHeader', res.data.result.userInfo)
+        this.$emit('toWkpage', res.data)
       })
       // .catch((err) => {
       //   //   console.log(err.response.data.message)

@@ -6,6 +6,9 @@ import Wkpage from '../views/Wkpage.vue'
 import Login from '../views/Login.vue'
 import Teacher from '../views/Teacher.vue'
 import Student from '../views/Student.vue'
+import Courseman from '../views/Courseman.vue'
+import Howkman from '../views/Howkman.vue'
+import Studentman from '../views/Studentman.vue'
 
 const routes = [
   {
@@ -21,7 +24,13 @@ const routes = [
   {
     path: '/teacher',
     name: 'Teacher',
-    component: Teacher
+    component: Teacher,
+    children: [
+      { path: 'courseman', component: Courseman },
+      { path: 'howkman', component: Howkman },
+      { path: 'studentman', component: Studentman },
+
+    ]
   },
   {
     path: '/student',

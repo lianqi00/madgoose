@@ -13,13 +13,16 @@ const {
     login,
     modUserInfo,
     changePassWord,
-    resetPassWord } = require('../controller/user.controller')
+    resetPassWord,
+    getFetchInfo } = require('../controller/user.controller')
 //引入其他中间件
 const { islogin, isHighLeve } = require('../middleware/auth.middleware')
 const { pwCrypt } = require('../middleware/user.middleware')
 
 //获取全部用户信息（只有管理员和老师能用）
-router.get('/', getUserInfo)
+router.get('/', islogin, getUserInfo)
+//获取用户信息，根据token返回信息
+router.get('/fetch', islogin, getFetchInfo)
 //添加用户
 router.post('/register', pwCrypt, register)
 //登录

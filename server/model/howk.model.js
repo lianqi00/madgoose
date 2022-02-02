@@ -15,6 +15,9 @@ const howkSchema = new Schema({
     howk_uptype: {
         type: []
     },
+    howk_size: {
+        type: String
+    },
     howk_deadline: {
         type: Date
     },

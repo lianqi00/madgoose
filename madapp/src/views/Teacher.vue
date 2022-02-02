@@ -1,10 +1,82 @@
 <template>
-  <div class="teacher">教师页面</div>
+  <div class="teacher">
+    <el-container>
+      <el-header>
+        <myheader :cdate="userdata" />
+      </el-header>
+      <el-container>
+        <el-aside width="200px"
+          ><el-menu
+            router
+            class="el-menu-vertical"
+            @open="handleOpen"
+            @close="handleClose"
+            @select="handlelect"
+          >
+            <el-menu-item index="/teacher/courseman">
+              <i class="el-icon-setting"></i>
+              <span slot="title">课程管理</span>
+            </el-menu-item>
+            <el-menu-item index="/teacher/studentman">
+              <i class="el-icon-setting"></i>
+              <span slot="title">学生管理</span>
+            </el-menu-item>
+            <el-menu-item index="/teacher/howkman">
+              <i class="el-icon-setting"></i>
+              <span slot="title">作业管理</span>
+            </el-menu-item>
+            <el-menu-item index="4">
+              <i class="el-icon-setting"></i>
+              <span slot="title">其他</span>
+            </el-menu-item>
+          </el-menu></el-aside
+        >
+        <el-main style="padding: 0">
+          <router-view></router-view>
+        </el-main>
+      </el-container>
+    </el-container>
+  </div>
 </template>
 
 <script>
-export default {}
+import myheader from '../components/myheader.vue'
+
+export default {
+  components: { myheader },
+  created() {
+    this.fetch()
+  },
+  data() {
+    return {
+      userdata: {},
+    }
+  },
+  methods: {
+    fetch() {
+      this.$http.get('/user/fetch').then((res) => {
+        console.log(res)
+        this.userdata = res.data.result
+      })
+    },
+    handlelect(key, keyPath) {
+      // console.log(key, keyPath)
+      // this.$router.push('/teacher/courseman')
+    },
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath)
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath)
+    },
+  },
+}
 </script>
 
-<style>
+<style scoped>
+.el-header {
+  background-color: #b3c0d1;
+  color: var(--el-text-color-primary);
+  line-height: 60px;
+}
 </style>

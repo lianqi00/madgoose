@@ -104,7 +104,8 @@ export default {
           element.howk_deadline = moment(element.howk_deadline).format(
             'MM月DD日 HH:mm'
           )
-          element.howk_done = element.howk_done === null ? '未完成' : '完成'
+          // console.log(element.howk_done)
+          element.howk_done = element.howk_done.length === 0 ? '未完成' : '完成'
         }
         this.tableData = result
         console.log(result)
@@ -139,7 +140,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .el-header {
   background-color: #b3c0d1;
   color: var(--el-text-color-primary);
