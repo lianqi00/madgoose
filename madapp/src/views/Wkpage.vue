@@ -43,6 +43,12 @@
         <uploadlite v-if="this.active === 2 ? true : false" />
         <feedbacklite v-if="this.active === 3 ? true : false" />
       </el-main>
+      <el-footer>
+        <span style="font-size: 10px"
+          >Copyright © 2022 lianqi All Rights Reserved. 连亓 版权所有</span
+        >
+        <span style="font-size: 10px"> ｜备案号：xxxxxxxxxx</span>
+      </el-footer>
     </el-container>
   </div>
 </template>
@@ -97,9 +103,20 @@ export default {
   color: var(--el-text-color-primary);
   line-height: 60px;
 }
-.el-card {
-  min-height: 300px;
+/* .el-card {
+  min-height: 400px;
   width: 90%;
   margin: 20px auto;
+} */
+.el-footer {
+  background-color: #b3c0d1;
+  color: var(--el-text-color-primary);
+  text-align: center;
+  line-height: 60px;
+  /* height: 60px; */
+  width: 100%;
+  /* position: absolute; */
+  bottom: 0px;
+  left: 0px;
 }
 </style>

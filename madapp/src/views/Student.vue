@@ -28,7 +28,6 @@
                 )
               "
               style="width: 100%"
-              max-height="700px"
             >
               <el-table-column label="作业名称" prop="howk_name">
               </el-table-column>
@@ -71,7 +70,12 @@
               </el-table-column>
             </el-table>
           </el-main>
-          <el-footer>Footer</el-footer>
+          <el-footer>
+            <span style="font-size: 10px"
+              >Copyright © 2022 lianqi All Rights Reserved. 连亓 版权所有</span
+            >
+            <span style="font-size: 10px"> ｜备案号：xxxxxxxxxx</span>
+          </el-footer>
         </el-container>
       </el-container>
     </el-container>
@@ -151,6 +155,11 @@ export default {
   color: var(--el-text-color-primary);
   text-align: center;
   line-height: 60px;
+  /* height: 60px; */
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
 }
 
 .el-main {

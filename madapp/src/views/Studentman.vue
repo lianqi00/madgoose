@@ -1,6 +1,21 @@
 <template>
   <div class="studentman">
-    <el-table :data="tableData" border style="width: 100%">
+    <el-select
+      v-model="value"
+      placeholder="请选择"
+      style="margin-top: 5px; margin-left: 5px"
+    >
+      <el-option
+        v-for="item in options"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value"
+      >
+      </el-option>
+    </el-select>
+    <el-button type="primary" style="margin-left: 10px">新建学生</el-button>
+    <el-button type="primary">批量导入</el-button>
+    <el-table :data="tableData" border style="width: 100%; margin-top: 10px">
       <el-table-column prop="user_number" label="学号" width="100">
       </el-table-column>
       <el-table-column prop="user_name" label="姓名" width="70">
@@ -37,6 +52,29 @@ export default {
   data() {
     return {
       tableData: [],
+      options: [
+        {
+          value: '选项1',
+          label: '黄金糕',
+        },
+        {
+          value: '选项2',
+          label: '双皮奶',
+        },
+        {
+          value: '选项3',
+          label: '蚵仔煎',
+        },
+        {
+          value: '选项4',
+          label: '龙须面',
+        },
+        {
+          value: '选项5',
+          label: '北京烤鸭',
+        },
+      ],
+      value: '',
     }
   },
   methods: {

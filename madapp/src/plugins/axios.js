@@ -1,6 +1,8 @@
 "use strict";
 
 import Vue from 'vue';
+// import VueRouter from 'vue-router';
+import Router from '../router/index'
 import axios from "axios";
 
 // Full config:  https://github.com/axios/axios#request-config
@@ -42,6 +44,12 @@ _axios.interceptors.response.use(
       message: error.response.data.message,
       type: 'error'
     })
+    console.log(error.response.status);
+    if (error.response.status === 401) {
+      // console.log(Vue.prototype.$router);
+      // Vue.prototype.$router.push('/login')
+      Router.push('/login')
+    }
     // console.log(error.response.data.code !== 0);
     // console.log(this);
     // return Promise.reject(error);

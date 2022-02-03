@@ -282,6 +282,7 @@ export default {
         this.centerDialogVisible = false
         // console.log(this.addform)
         this.coursefiller = this.addform.course_id
+        this.addform = {}
         this.fetch()
       })
     },

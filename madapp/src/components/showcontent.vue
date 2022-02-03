@@ -10,25 +10,29 @@
           >18100000000</el-descriptions-item
         >
         <el-descriptions-item label="提交类型">{{
-          this.data.howk_uptype
+          this.data.howk_uptype.toString()
         }}</el-descriptions-item>
-        <el-descriptions-item label="创建时间">
-          <el-tag size="small">{{ this.data.createdAt }}</el-tag>
+        <el-descriptions-item label="大小限制">
+          <el-tag size="small">{{ this.data.howk_size + 'MB' }}</el-tag>
         </el-descriptions-item>
         <el-descriptions-item label="截止时间">
           <el-tag size="small">{{ this.data.howk_deadline }}</el-tag>
         </el-descriptions-item>
-        <el-descriptions-item label="剩余时间">{{
-          this.countdowntext
-        }}</el-descriptions-item>
+        <el-descriptions-item label="剩余时间"
+          ><el-tag size="small" :type="tagtype">{{
+            this.countdown(this.data.howk_deadline2)
+          }}</el-tag>
+        </el-descriptions-item>
       </el-descriptions>
       <!-- <p style="" v-if="empty" v-html="this.data.howk_content"></p> -->
-      <div v-html="this.data.howk_content"></div>
+      <div v-if="empty" v-html="this.data.howk_content"></div>
     </el-card>
   </div>
+  <!-- this.tnow(this.data.howk_deadline) -->
 </template>
 
 <script>
+// import MvCountDown from 'mv-count-down'
 import moment from 'moment'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
@@ -38,19 +42,40 @@ export default {
   name: 'showcontent',
   components: {
     quillEditor,
+    // MvCountDown,
   },
   created() {
     this.fetch()
   },
   data() {
     return {
+      now: '',
       data: '',
+      utcdate: '',
       countdowntext: '',
       empty: false,
       emptyetxt: '',
+      tagtype: '',
+      lefttime: '',
+      watchtest: '',
     }
   },
   methods: {
+    // tnow: (v) => {
+    //   setInterval(function () {
+    //     const stamdate = Date.parse(v)
+    //     // this.now = Date.now()
+    //     // console.log(stamdate)
+    //     const a = (stamdate - Date.now()) / 1000
+    //     const s = parseInt(a % 60)
+    //     const m = parseInt((a % 3600) / 60)
+    //     const h = parseInt((a % 86400) / 3600)
+    //     const d = parseInt(a / 86400)
+    //     const text = d + '天' + h + '小时' + m + '分钟' + s + '秒'
+    //     console.log(text)
+    //     return text
+    //   }, 1000)
+    // },
     fetch() {
       // console.log(this.$route.params.id)
       let _id = this.$route.params.id
@@ -65,31 +90,56 @@ export default {
           return
         }
         this.empty = true
-        this.countdowntext = this.countdown(res.data.result.howk_deadline)
+        // this.tnow(res.data.result.howk_deadline)
         this.data = res.data.result || ''
+        this.data.howk_deadline2 = res.data.result.howk_deadline
+        // console.log(this.data)
         this.data.createdAt = moment(this.data.createdAt).format(
           'MM月DD日 HH:mm'
         )
         this.data.howk_deadline = moment(this.data.howk_deadline).format(
           'MM月DD日 HH:mm'
         )
+        // console.log(this.data)
       })
     },
-    countdown(dd) {
-      console.log(dd)
-      let newdate = Date.parse(dd)
-      console.log(newdate)
-      console.log(Date.now())
-      // setInterval()
-      return moment(newdate - Date.now()).format('DD天HH小时mm分钟ss秒')
+    countdown(deadline) {
+      // console.log(this.utcdate)
+      const stamdate = Date.parse(deadline)
+      // console.log(stamdate)
+      // console.log(Date.now())
+      const lim = stamdate - Date.now()
+      console.log(lim < 0)
+      if (lim < 0) {
+        this.empty = false
+        this.emptyetxt = '已过截止时间，无法上传作业！'
+        this.$emit('isbutshow', false)
+        return
+      }
+
+      const a = lim / 1000
+      const m = parseInt((a % 3600) / 60)
+      const h = parseInt((a % 86400) / 3600)
+      const d = parseInt(a / 86400)
+      // const d = 4
+
+      const text = d + '天' + h + '小时' + m + '分钟'
+      if (d <= 1) {
+        this.tagtype = 'danger'
+      } else if (d <= 2) {
+        this.tagtype = 'warning'
+      } else {
+        this.tagtype = 'success'
+      }
+      return text
     },
   },
 }
 </script>
 
-<style>
+<style >
 .el-card {
-  min-height: 300px;
+  min-height: 500px;
   width: 90%;
   margin: 20px auto;
 }

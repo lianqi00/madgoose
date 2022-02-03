@@ -105,7 +105,7 @@ class UserController {
         const { user_number } = ctx.request.body
         const p = ctx.request.body.password
         if (!user_number || !p) {
-            ctx.status = 401
+            ctx.status = 422
             ctx.body = {
                 code: '10006',
                 message: '学号或密码不能为空',
@@ -117,7 +117,7 @@ class UserController {
         try {
             const isUserExi = await User.findOne({ user_number }).select('+password').setOptions({ lean: true })
             if (!isUserExi) {
-                ctx.status = 401
+                ctx.status = 422
                 ctx.body = {
                     code: '10004',
                     message: '学号或密码错误',
@@ -127,7 +127,7 @@ class UserController {
             }
             //查询密码是否正确
             if (!bcrypt.compareSync(p, isUserExi.password)) {
-                ctx.status = 401
+                ctx.status = 422
                 ctx.body = {
                     code: '10005',
                     message: '学号或密码错误',
