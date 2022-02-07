@@ -25,11 +25,7 @@
           </div>
         </el-form-item>
         <el-form-item label="提交类型">
-          <el-select
-            v-model="addform.howk_uptype"
-            multiple
-            placeholder="请选择"
-          >
+          <el-select v-model="addform.howk_uptypetext" placeholder="请选择">
             <el-option
               v-for="item in typeoptions"
               :key="item.value"
@@ -72,6 +68,24 @@
       </span>
     </el-dialog>
 
+    <el-dialog
+      title="复制作业链接"
+      :visible.sync="copydialog"
+      width="30%"
+      center
+    >
+      <el-input
+        type="textarea"
+        :rows="2"
+        placeholder="请输入内容"
+        v-model="copytextarea"
+      >
+      </el-input>
+      <el-link :href="copytextarea" target="_blank" type="success"
+        >点击跳转</el-link
+      >
+    </el-dialog>
+
     <div class="butayy" style="margin: 10px">
       <el-button round @click="addwork"> 添加作业</el-button>
       <el-select
@@ -95,12 +109,15 @@
       <el-table-column prop="howk_deadline" label="截止时间" width="180">
       </el-table-column>
       <el-table-column prop="howk_done" label="提交情况"> </el-table-column>
-      <el-table-column fixed="right" label="操作" width="200">
+      <el-table-column fixed="right" label="操作" width="250">
         <template slot-scope="scope">
           <el-button @click="handleClick(scope.row)" type="text" size="small"
             >看作业</el-button
           >
           <el-button type="text" size="small">看反馈</el-button>
+          <el-button type="text" size="small" @click="handleCopy(scope.row)"
+            >复制链接</el-button
+          >
           <el-button type="text" size="small" @click="open(scope.row)"
             >删除</el-button
           >
@@ -127,40 +144,61 @@ export default {
   },
   data() {
     return {
+      copytextarea: '',
+      copydialog: false,
       tempdata: [],
       coursefiller: '',
       courseinfo: [],
+      types: {
+        '.doc,.docx': [
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'application/msword',
+        ],
+        '.ppt,.pptx': [
+          'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+          'application/vnd.ms-powerpoint',
+        ],
+        '.xls,.xlsx': [
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'application/vnd.ms-excel',
+        ],
+        '.jpg,.jpeg': ['image/jpeg'],
+        '.rar,.zip': ['application/x-rar-compressed', 'application/zip'],
+        '.pdf': ['application/pdf'],
+        '.psd': ['image/vnd.adobe.photoshop'],
+        '.mp4': ['video/mp4'],
+      },
       typeoptions: [
         {
-          value: 'word文档',
+          value: '.doc,.docx',
           label: 'word文档',
         },
         {
-          value: 'ppt幻灯片',
+          value: '.ppt,.pptx',
           label: 'ppt幻灯片',
         },
         {
-          value: 'excel表格',
+          value: '.xls,.xlsx',
           label: 'excel表格',
         },
         {
-          value: '图像',
+          value: '.jpg,.jpeg',
           label: '图像',
         },
         {
-          value: '压缩包',
+          value: '.rar,.zip',
           label: '压缩包',
         },
         {
-          value: 'pdf文档',
+          value: '.pdf',
           label: 'pdf文档',
         },
         {
-          value: 'psd工程文件',
+          value: '.psd',
           label: 'psd工程文件',
         },
         {
-          value: 'mp4视频',
+          value: '.mp4',
           label: 'mp4视频',
         },
       ],
@@ -207,6 +245,12 @@ export default {
     }
   },
   methods: {
+    handleCopy(row) {
+      this.copydialog = true
+      const copylink =
+        'http://localhost:8080/wkpage/' + row._id + '/' + this.coursefiller
+      this.copytextarea = copylink
+    },
     open(row) {
       this.$confirm('此操作将永久删除该作业, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -267,9 +311,16 @@ export default {
         })
     },
     confirmaddform() {
-      console.log(this.addform)
-      //   const a = this.addform.howk_deadline.toGMTString()
-      //   console.log(a)
+      const q = this.addform.howk_uptypetext
+      for (const key in this.types) {
+        if (key === q) {
+          // console.log(this.types[key])
+          this.addform.howk_uptype = this.types[key]
+        }
+      }
+      // console.log(this.addform)
+      // const a = this.addform.howk_deadline.toGMTString()
+      // console.log(a)
       this.$http.post('/howk/add', this.addform).then((res) => {
         console.log(res)
         if (!res || !res.data.result) {

@@ -69,7 +69,7 @@ export default {
             if (res.data.result.userInfo.user_type === 1) {
               this.$router.push('/teacher')
             } else if (res.data.result.userInfo.user_type === 0) {
-              this.$router.push('/student')
+              this.$router.push('/student/' + res.data.result.userInfo._id)
             }
           })
         } else {

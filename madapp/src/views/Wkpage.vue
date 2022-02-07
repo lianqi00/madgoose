@@ -37,10 +37,15 @@
           v-if="this.active === 1 ? true : false"
         />
         <showcontent
+          @toUp="toUp"
           @isbutshow="isbbshow"
           v-if="this.active === 0 ? true : false"
         />
-        <uploadlite v-if="this.active === 2 ? true : false" />
+        <uploadlite
+          :touUpdata="toupdata"
+          @upLoadtoWkpage="getUploadinfo"
+          v-if="this.active === 2 ? true : false"
+        />
         <feedbacklite v-if="this.active === 3 ? true : false" />
       </el-main>
       <el-footer>
@@ -66,28 +71,40 @@ export default {
       active: 0,
       user_name: '',
       isbshow: true,
+      toupdata: {},
     }
   },
+  created() {
+    // console.log(this.$route.params)
+  },
   methods: {
+    getUploadinfo(d) {
+      console.log(d)
+      this.next()
+    },
+    toUp(d) {
+      console.log(d)
+      this.toupdata = d
+    },
     getheaderdate() {
       // console.log(d)
       // this.active = d
       location.reload()
     },
     isbbshow(v) {
-      console.log(v)
+      // console.log(v)
       this.isbshow = v
     },
     getloginlited(data) {
-      console.log(data.code == 0)
+      // console.log(data)
       if (data.code == 0) {
         this.next()
       }
     },
     next() {
       if (this.active++ > 3) this.active = 1
-      console.log(this.$route.params)
-      console.log(this.active)
+      // console.log(this.$route.params)
+      // console.log(this.active)
 
       if (this.active === 4) {
         this.$router.push('/student')

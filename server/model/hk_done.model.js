@@ -13,10 +13,10 @@ const hk_doneSchema = new Schema({
         ref: 'howk',
         required: true
     },
-    hk_done_id: {
-        type: String,
-        required: true
-    },
+    bucket: { type: String },
+    fsize: { type: Number },
+    hash: { type: String },
+    key: { type: String, required: true, unique: true },
     hk_done_score: {
         type: Number
     }

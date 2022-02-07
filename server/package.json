@@ -22,6 +22,7 @@
     "moment": "^2.29.1",
     "mongoose": "^6.1.7",
     "mysql2": "^2.3.3",
+    "qiniu": "^7.4.0",
     "sequelize": "^6.13.0"
   },
   "devDependencies": {

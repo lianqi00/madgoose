@@ -25,8 +25,10 @@ export default {
   name: 'myheader',
   created() {
     this.bus.$on('toHeader', (d) => {
+      // console.log('@@@@@@@' + this.userinfo)
+      console.log(d)
       this.userinfo = d
-      console.log(this.userinfo)
+      // this.bus.$emit('toUpLoad', this.userinfo)
     })
   },
   props: {

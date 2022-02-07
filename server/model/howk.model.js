@@ -15,6 +15,9 @@ const howkSchema = new Schema({
     howk_uptype: {
         type: []
     },
+    howk_uptypetext: {
+        type: String
+    },
     howk_size: {
         type: String
     },

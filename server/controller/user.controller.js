@@ -25,7 +25,10 @@ class UserController {
                 .populate(
                     {
                         path: 'user_course',
-                        populate: { path: 'course_howk' }
+                        populate: {
+                            path: 'course_howk',
+                            populate: { path: 'howk_done' }
+                        }
                     })
             let newayy = []
             users.forEach(e => {

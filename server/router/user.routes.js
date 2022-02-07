@@ -18,11 +18,14 @@ const {
 //引入其他中间件
 const { islogin, isHighLeve } = require('../middleware/auth.middleware')
 const { pwCrypt } = require('../middleware/user.middleware')
+const { qiniuToken } = require('../middleware/qiniu.middleware')
 
 //获取全部用户信息（只有管理员和老师能用）
 router.get('/', islogin, getUserInfo)
 //获取用户信息，根据token返回信息
 router.get('/fetch', islogin, getFetchInfo)
+//获取上传token
+router.get('/fetchtoken', qiniuToken)
 //添加用户
 router.post('/register', pwCrypt, register)
 //登录

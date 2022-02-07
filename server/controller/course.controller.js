@@ -57,7 +57,8 @@ class CourseController {
     }
     //查询课程
     async getHowk(ctx, next) {
-        const result = await Course.find({}).populate({ path: "course_howk" })
+        const fil = ctx.query || {}
+        const result = await Course.find({ fil }).populate({ path: "course_howk" })
         ctx.body = {
             code: 0,
             message: '课程获取成功',

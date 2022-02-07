@@ -12,9 +12,10 @@ router.post('/add', addCourse)
 //作业挂靠课程
 router.post('/addhowk', courseAddHowk)
 
-//查询全部课程后
-router.get('/gethowk', islogin, getHowk)
+//查询全部课程
+router.get('/gethowk', getHowk)
 
+//删除课程
 router.delete('/delecourse', deleCourse)
 
 

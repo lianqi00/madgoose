@@ -6,11 +6,11 @@
         <el-descriptions-item label="作业名称">{{
           this.data.howk_name
         }}</el-descriptions-item>
-        <el-descriptions-item label="所属课程"
-          >18100000000</el-descriptions-item
-        >
+        <el-descriptions-item label="所属课程">{{
+          this.data.coursename
+        }}</el-descriptions-item>
         <el-descriptions-item label="提交类型">{{
-          this.data.howk_uptype.toString()
+          this.data.howk_uptypetext
         }}</el-descriptions-item>
         <el-descriptions-item label="大小限制">
           <el-tag size="small">{{ this.data.howk_size + 'MB' }}</el-tag>
@@ -58,6 +58,7 @@ export default {
       tagtype: '',
       lefttime: '',
       watchtest: '',
+      // coursename: '',
     }
   },
   methods: {
@@ -78,25 +79,38 @@ export default {
     // },
     fetch() {
       // console.log(this.$route.params.id)
-      let _id = this.$route.params.id
-      this.$http.get('/howk/getHowkInfo', { params: { _id } }).then((res) => {
-        // console.log(res)
-        // console.log(!res)
-        // console.log(res)
-
+      let id = this.$route.params.id
+      let _id = this.$route.params.cid
+      this.$http.get('/course/getHowk', { params: { _id } }).then((res) => {
         if (!res || !res.data.result) {
           this.emptyetxt = '获取作业失败，请检查链接是否正确或完整。'
           this.$emit('isbutshow', false)
           return
         }
+        // console.log(res)
+        const ayy = res.data.result
+        // let newayy = {}
+        ayy.forEach((ce) => {
+          ce.course_howk.forEach((he) => {
+            if (id === he._id) {
+              // const newayy = he
+              // console.log(newayy)
+              this.data = he || ''
+              // console.log(ce.course_name)
+              this.data.coursename = ce.course_name
+            }
+          })
+        })
+        // console.log(this.data)
+        this.$emit('toUp', this.data)
         this.empty = true
         // this.tnow(res.data.result.howk_deadline)
-        this.data = res.data.result || ''
-        this.data.howk_deadline2 = res.data.result.howk_deadline
+        // this.data = res.data.result || ''
+        this.data.howk_deadline2 = this.data.howk_deadline
         // console.log(this.data)
-        this.data.createdAt = moment(this.data.createdAt).format(
-          'MM月DD日 HH:mm'
-        )
+        // this.data.createdAt = moment(this.data.createdAt).format(
+        //   'MM月DD日 HH:mm'
+        // )
         this.data.howk_deadline = moment(this.data.howk_deadline).format(
           'MM月DD日 HH:mm'
         )

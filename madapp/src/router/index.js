@@ -12,7 +12,7 @@ import Studentman from '../views/Studentman.vue'
 
 const routes = [
   {
-    path: '/wkpage/:id',
+    path: '/wkpage/:id/:cid',
     name: 'Wkpage',
     component: Wkpage
   },
@@ -33,7 +33,7 @@ const routes = [
     ]
   },
   {
-    path: '/student',
+    path: '/student/:id',
     name: 'Student',
     component: Student
   }

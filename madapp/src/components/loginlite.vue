@@ -22,6 +22,11 @@
 <script>
 export default {
   name: 'loginlite',
+  // created() {
+  //   this.bus.$on('toLoginlite', (d) => {
+  //     console.log(d)
+  //   })
+  // },
   data() {
     return {
       form: {},
@@ -40,14 +45,24 @@ export default {
         if (!res) {
           return
         }
+        const user_course = res.data.result.userInfo.user_course
+        const cid = this.$route.params.cid
+        // console.log(user_course, cid)
+        if (user_course !== cid) {
+          this.$message({
+            type: 'error',
+            message: '你并不是此作业所在课程的学生，无法上传',
+          })
+          return
+        }
         this.$message({
           type: 'success',
           message: res.data.message,
         })
-        sessionStorage.token = res.data.result.token
-        console.log(res.data.result.userInfo)
         this.bus.$emit('toHeader', res.data.result.userInfo)
+        // console.log(res.data.result.userInfo)
         this.$emit('toWkpage', res.data)
+        sessionStorage.token = res.data.result.token
       })
       // .catch((err) => {
       //   //   console.log(err.response.data.message)
