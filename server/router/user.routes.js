@@ -14,7 +14,7 @@ const {
     modUserInfo,
     changePassWord,
     resetPassWord,
-    getFetchInfo } = require('../controller/user.controller')
+    getFetchInfo, deleteUser, addMany } = require('../controller/user.controller')
 //引入其他中间件
 const { islogin, isHighLeve } = require('../middleware/auth.middleware')
 const { pwCrypt } = require('../middleware/user.middleware')
@@ -37,6 +37,9 @@ router.patch('/changepassword', islogin, pwCrypt, changePassWord)
 //重置密码
 router.get('/resetpassword', resetPassWord)
 //删除用户
+router.delete('/deluser', deleteUser)
+//上传excel，批量添加用户
+router.post('/addmany', addMany)
 
 
 module.exports = router

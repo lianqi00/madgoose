@@ -7,6 +7,7 @@ class CourseController {
     //添加课程
     async addCourse(ctx, next) {
         // console.log(ctx.request.body);
+        // console.log('添加课程');
         try {
             const result = await Course.create(ctx.request.body)
             ctx.body = {
@@ -67,8 +68,8 @@ class CourseController {
     }
     //删除课程
     async deleCourse(ctx, next) {
-        console.log(1);
-        console.log(ctx.query);
+        // console.log(1);
+        // console.log(ctx.query);
         const { _id } = ctx.query
         const result = await Course.deleteOne({ _id })
         ctx.body = {

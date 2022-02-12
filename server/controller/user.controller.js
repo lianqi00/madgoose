@@ -1,10 +1,18 @@
 
 //控制层-关于用户的业务逻辑代码
 
+const fs = require('fs')
+const path = require('path')
+
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const xlsx = require('node-xlsx');
+
 
 const User = require('../model/user.model')
+const Hk_done = require('../model/hk_done.model')
+const Howk = require('../model/howk.model')
+const Course = require('../model/course.model')
 
 
 const { JWT_SECRET } = process.env
@@ -32,13 +40,13 @@ class UserController {
                     })
             let newayy = []
             users.forEach(e => {
-                console.log(e);
+                // console.log(e);
                 if (e.user_type < 1) {
                     newayy.push(e)
                 }
             })
             ctx.body = {
-                code: '0',
+                code: 0,
                 message: '查询成功',
                 result: newayy
             }
@@ -46,11 +54,11 @@ class UserController {
         } catch (error) {
             ctx.status = 500
             ctx.body = {
-                code: '10003',
+                code: 10003,
                 message: '查询失败',
                 result: error
             }
-            console.log(error);
+            // console.log(error);
         }
 
     }
@@ -72,7 +80,7 @@ class UserController {
         if (!user_number || !user_name) {
             ctx.status = 400
             ctx.body = {
-                code: '10001',
+                code: 10001,
                 message: '注册信息缺失',
                 result: ''
             }
@@ -84,7 +92,7 @@ class UserController {
             const res = await User.create(ctx.request.body)
             const { password, ...result } = res._doc
             ctx.body = {
-                code: '0',
+                code: 0,
                 message: '用户注册成功',
                 result
             }
@@ -92,7 +100,7 @@ class UserController {
             // console.log(error)
             ctx.status = 409
             ctx.body = {
-                code: '10002',
+                code: 10002,
                 message: '用户已存在或其他问题',
                 result: error
 
@@ -110,7 +118,7 @@ class UserController {
         if (!user_number || !p) {
             ctx.status = 422
             ctx.body = {
-                code: '10006',
+                code: 10006,
                 message: '学号或密码不能为空',
                 result: ''
             }
@@ -122,7 +130,7 @@ class UserController {
             if (!isUserExi) {
                 ctx.status = 422
                 ctx.body = {
-                    code: '10004',
+                    code: 10004,
                     message: '学号或密码错误',
                     result: ''
                 }
@@ -132,7 +140,7 @@ class UserController {
             if (!bcrypt.compareSync(p, isUserExi.password)) {
                 ctx.status = 422
                 ctx.body = {
-                    code: '10005',
+                    code: 10005,
                     message: '学号或密码错误',
                     result: ''
                 }
@@ -142,7 +150,7 @@ class UserController {
             // console.log(isUserExi);
             const token = jwt.sign(userInfo, JWT_SECRET, { expiresIn: '1d' })
             ctx.body = {
-                code: '0',
+                code: 0,
                 message: '登录成功',
                 result: {
                     token, userInfo
@@ -152,7 +160,7 @@ class UserController {
             // console.log(error);
             ctx.status = 500
             ctx.body = {
-                code: '10007',
+                code: 10007,
                 message: '数据库错误',
                 result: error
             }
@@ -175,7 +183,7 @@ class UserController {
         // console.log(newUser);
         try {
             const result = await User.findOneAndUpdate({ _id }, newUser, { lean: true, new: true })
-            console.log(result);
+            // console.log(result);
             ctx.body = {
                 code: 0,
                 message: '信息修改成功',
@@ -219,7 +227,33 @@ class UserController {
         }
     }
     //删除用户
+    async deleteUser(ctx, next) {
+        // console.log(ctx.query);
+        const { _id } = ctx.query
+        //1、删除user表中的用户
+        const deluserres = await User.deleteOne({ _id })
+        // console.log(deluserres);
+        //2、删掉课程表中的hk_done数组
+        //2-1、查到所有此人的hk_done_id
+        const hkdoneres = await Hk_done.find({ hk_done_sid: _id })
+        hkdoneres.forEach(async (e) => {
+            await Howk.findOneAndUpdate({ _id: e.hk_done_wk }, { $pull: { howk_done: e._id } })
+        })
+        // console.log(filte);
+        // const delcouhkdoneres = await Howk.findByIdAndUpdate({ _id: courseid }, { $pullAll: { howk_done: filte } })
+        // console.log(delcouhkdoneres);
+        //3、删除hk_done中的所有此用户作业
+        const delhkdoneres = await Hk_done.deleteMany({ hk_done_sid: _id })
+        let str1 = '未删除用户,'
+        if (deluserres.deletedCount === 1) str1 = '用户已删除,'
+        let str2 = '并连带删除相连作业' + delhkdoneres.deletedCount + '项。'
 
+        ctx.body = {
+            code: 0,
+            message: str1 + str2,
+            result: { deluserres, delhkdoneres }
+        }
+    }
     //重置密码
     async resetPassWord(ctx, next) {
         // console.log(ctx.query._id)
@@ -266,6 +300,60 @@ class UserController {
 
         // console.log(user.user_number);
 
+
+    }
+    //批量添加用户
+    async addMany(ctx, next) {
+        // console.log(ctx.request.files.file);
+        const file = ctx.request.files.file
+        let sheets = xlsx.parse(fs.readFileSync(file.path))
+        // console.log(sheets[0].data);
+        let data = sheets[0].data
+        var sheetpase = []
+        let keys = [];
+        for (let rowId in data) {
+            let obj = {};
+            let row = data[rowId];
+            if (rowId == 0) {
+                keys = row;
+            } else {
+                for (let i = 0; i < row.length; i++) {
+                    obj[keys[i]] = row[i];
+                }
+                // console.log(obj);
+                sheetpase.push(obj)
+            }
+        }
+        // console.log(sheetpase);
+        let courseall = await Course.find({})
+        // console.log(courseall);
+        const salt = bcrypt.genSaltSync(10);
+        // const hash = bcrypt.hashSync(password, salt);
+        sheetpase.forEach((e, i) => {
+            sheetpase[i].password = bcrypt.hashSync(e.password, salt);
+            courseall.forEach((ee, ii) => {
+                if (e.user_course === ee.course_name) {
+                    sheetpase[i].user_course = courseall[ii]._id
+                }
+            })
+        })
+        console.log(sheetpase)
+        try {
+            const result = await User.insertMany(sheetpase)
+            // console.log(result);
+            ctx.body = {
+                code: 0,
+                message: '批量添加成功',
+                result
+            }
+        } catch (error) {
+            // console.log(error);
+            ctx.body = {
+                code: 10510,
+                message: '批量添加失败',
+                result: error
+            }
+        }
 
     }
 }

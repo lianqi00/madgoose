@@ -25,9 +25,9 @@
               <i class="el-icon-setting"></i>
               <span slot="title">作业管理</span>
             </el-menu-item>
-            <el-menu-item index="4">
+            <el-menu-item index="/teacher/feedbackman">
               <i class="el-icon-setting"></i>
-              <span slot="title">其他</span>
+              <span slot="title">反馈管理</span>
             </el-menu-item>
           </el-menu></el-aside
         >
@@ -61,7 +61,7 @@ export default {
   methods: {
     fetch() {
       this.$http.get('/user/fetch').then((res) => {
-        console.log(res)
+        // console.log(res)
         this.userdata = res.data.result
       })
     },
@@ -92,7 +92,7 @@ export default {
   line-height: 60px;
   /* height: 60px; */
   width: 100%;
-  position: absolute;
+  /* position: absolute; */
   bottom: 0px;
   left: 0px;
 }

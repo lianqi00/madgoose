@@ -13,12 +13,9 @@ const fd_doneSchema = new Schema({
         ref: 'howk',
         required: true
     },
-    fd_done_sc: {
-        type: Number
-    },
-    fd_done_text: {
+    fd_done_a: {
         type: String
-    }
+    },
 }, { timestamps: true })
 
 module.exports = Fd_done = model('fd_done', fd_doneSchema)

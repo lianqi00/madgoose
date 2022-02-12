@@ -45,6 +45,7 @@ export default {
       this.$http.get('/course/gethowk').then((res) => {
         console.log(res)
         this.coursedata = res.data.result
+        // this.bus.$emit('tostudentman', this.coursedata)
       })
     },
     submit() {

@@ -102,13 +102,17 @@
         >
         </el-option>
       </el-select>
+      <span style="margin-left: 20px; font-size: 15px"
+        >课程人数：{{ usercount }} 人
+      </span>
     </div>
     <el-table :data="tableData" style="width: 100%">
       <el-table-column prop="howk_name" label="作业名称" width="180">
       </el-table-column>
       <el-table-column prop="howk_deadline" label="截止时间" width="180">
       </el-table-column>
-      <el-table-column prop="howk_done" label="提交情况"> </el-table-column>
+      <el-table-column prop="howk_done.length" label="提交情况">
+      </el-table-column>
       <el-table-column fixed="right" label="操作" width="250">
         <template slot-scope="scope">
           <el-button @click="handleClick(scope.row)" type="text" size="small"
@@ -141,9 +145,11 @@ export default {
   },
   created() {
     this.fetch()
+    // this.getusercount()
   },
   data() {
     return {
+      usercount: '',
       copytextarea: '',
       copydialog: false,
       tempdata: [],
@@ -245,6 +251,20 @@ export default {
     }
   },
   methods: {
+    getusercount() {
+      this.$http.get('/user/').then((res) => {
+        // console.log(res.data.result)
+        let userdata = res.data.result
+        let count = 0
+        // console.log(val)
+        userdata.forEach((e) => {
+          if (e.user_course._id === this.coursefiller) {
+            count++
+          }
+        })
+        this.usercount = count
+      })
+    },
     handleCopy(row) {
       this.copydialog = true
       const copylink =
@@ -273,6 +293,7 @@ export default {
     },
     coursechange() {
       // console.log(this.coursefiller)
+      this.getusercount()
       const d = this.tempdata
       d.forEach((e) => {
         if (e._id === this.coursefiller) {
@@ -338,16 +359,6 @@ export default {
       })
     },
     fetch() {
-      // this.$http.get('/howk/all').then((res) => {
-      //   console.log(res)
-      //   this.tableData = res.data.result
-      //   for (let i = 0; i < this.tableData.length; i++) {
-      //     const element = this.tableData[i]
-      //     element.howk_deadline = moment(element.howk_deadline).format(
-      //       'MM月DD日 HH:mm'
-      //     )
-      //   }
-      // })
       this.$http.get('/course/gethowk').then((res) => {
         console.log(res)
         this.tempdata = res.data.result

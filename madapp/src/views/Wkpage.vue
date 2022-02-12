@@ -46,7 +46,11 @@
           @upLoadtoWkpage="getUploadinfo"
           v-if="this.active === 2 ? true : false"
         />
-        <feedbacklite v-if="this.active === 3 ? true : false" />
+        <feedbacklite
+          :tofeedbackdata="userinfo"
+          @fdbktowkpage="fdbktoWkpage"
+          v-if="this.active === 3 ? true : false"
+        />
       </el-main>
       <el-footer>
         <span style="font-size: 10px"
@@ -68,6 +72,7 @@ export default {
   components: { loginlite, Showcontent, uploadlite, Feedbacklite, myheader },
   data() {
     return {
+      userinfo: {},
       active: 0,
       user_name: '',
       isbshow: true,
@@ -78,6 +83,9 @@ export default {
     // console.log(this.$route.params)
   },
   methods: {
+    fdbktoWkpage(d) {
+      this.next()
+    },
     getUploadinfo(d) {
       console.log(d)
       this.next()
@@ -87,7 +95,7 @@ export default {
       this.toupdata = d
     },
     getheaderdate() {
-      // console.log(d)
+      console.log(d)
       // this.active = d
       location.reload()
     },
@@ -96,8 +104,10 @@ export default {
       this.isbshow = v
     },
     getloginlited(data) {
-      // console.log(data)
-      if (data.code == 0) {
+      console.log('@@@', data)
+      this.userinfo = data.result.userInfo
+      console.log(this.userinfo)
+      if (data.code === 0) {
         this.next()
       }
     },
@@ -107,7 +117,8 @@ export default {
       // console.log(this.active)
 
       if (this.active === 4) {
-        this.$router.push('/student')
+        const _id = this.userinfo._id
+        this.$router.push('/student/' + _id)
       }
     },
   },

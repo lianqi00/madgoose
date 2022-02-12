@@ -7,13 +7,6 @@ const feedbackSchema = new Schema({
         type: String,
         required: true
     },
-    feedback_type: {
-        type: Boolean,
-        required: true
-    },
-    feedback_img: {
-        type: String
-    },
     feedback_option: {
         type: []
     }

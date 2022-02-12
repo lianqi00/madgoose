@@ -18,7 +18,7 @@ class HowkController {
             // console.log(result._id);
             const course_howk = result._id
             const finalres = await Course.findOneAndUpdate({ _id: course_id }, { $addToSet: { course_howk } }, { lean: true, new: true })
-            console.log(finalres);
+            // console.log(finalres);
             ctx.body = {
                 code: 0,
                 message: '作业创建成功',
@@ -31,7 +31,7 @@ class HowkController {
                 message: '创建作业失败',
                 result: error
             }
-            console.log(error);
+            // console.log(error);
         }
 
         // ctx.body = result
@@ -106,7 +106,7 @@ class HowkController {
     }
     //删除作业
     async deleteHowk(ctx, next) {
-        console.log(ctx.query);
+        // console.log(ctx.query);
         const { _id, course_id } = ctx.query
         try {
             const h = await Howk.deleteOne({ _id })

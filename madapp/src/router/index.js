@@ -9,8 +9,15 @@ import Student from '../views/Student.vue'
 import Courseman from '../views/Courseman.vue'
 import Howkman from '../views/Howkman.vue'
 import Studentman from '../views/Studentman.vue'
+import Home from '../views/Home.vue'
+import Feedback from '../views/Feedbackman.vue'
 
 const routes = [
+  {
+    path: '/',
+    name: 'home',
+    component: Home
+  },
   {
     path: '/wkpage/:id/:cid',
     name: 'Wkpage',
@@ -29,6 +36,7 @@ const routes = [
       { path: 'courseman', component: Courseman },
       { path: 'howkman', component: Howkman },
       { path: 'studentman', component: Studentman },
+      { path: 'feedbackman', component: Feedback },
 
     ]
   },

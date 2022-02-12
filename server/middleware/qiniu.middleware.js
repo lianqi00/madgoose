@@ -34,7 +34,7 @@ class QiniuMiddleware {
         var privateBucketDomain = 'http://r6ri4pihk.hb-bkt.clouddn.com';
         var deadline = parseInt(Date.now() / 1000) + 3600; // 1小时过期
         var privateDownloadUrl = bucketManager.privateDownloadUrl(privateBucketDomain, key, deadline);
-        console.log(privateDownloadUrl);
+        // console.log(privateDownloadUrl);
         ctx.body = {
             code: 0,
             message: '下载地址生成成功',
