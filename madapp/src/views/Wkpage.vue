@@ -1,57 +1,63 @@
 <template>
   <div class="wkpage">
-    <el-container>
+    <el-container style="height: 100vh">
       <el-header> <myheader @headertowkpage="getheaderdate" /> </el-header>
-      <el-main>
-        <el-steps :active="active" align-center finish-status="success">
-          <el-step
-            title="步骤 1"
-            icon="el-icon-edit"
-            description="作业内容"
-          ></el-step>
-          <el-step
-            title="步骤 2"
-            icon="el-icon-user"
-            description="登录"
-          ></el-step>
-          <el-step
-            title="步骤 3"
-            icon="el-icon-upload2"
-            description="上传"
-          ></el-step>
-          <el-step title="步骤 4" icon="el-icon-chat-round" description="反馈">
-          </el-step>
-        </el-steps>
-        <div align="center">
-          <el-button
-            v-show="this.isbshow"
-            style="margin: 20px 0 0 0"
-            v-if="this.active >= 1 ? false : true"
-            @click="next"
-            >我要交作业
-          </el-button>
-        </div>
+      <el-container style="felx: 1">
+        <el-main>
+          <el-steps :active="active" align-center finish-status="success">
+            <el-step
+              title="步骤 1"
+              icon="el-icon-edit"
+              description="作业内容"
+            ></el-step>
+            <el-step
+              title="步骤 2"
+              icon="el-icon-user"
+              description="登录"
+            ></el-step>
+            <el-step
+              title="步骤 3"
+              icon="el-icon-upload2"
+              description="上传"
+            ></el-step>
+            <el-step
+              title="步骤 4"
+              icon="el-icon-chat-round"
+              description="反馈"
+            >
+            </el-step>
+          </el-steps>
+          <div align="center">
+            <el-button
+              v-show="this.isbshow"
+              style="margin: 20px 0 0 0"
+              v-if="this.active >= 1 ? false : true"
+              @click="next"
+              >我要交作业
+            </el-button>
+          </div>
 
-        <loginlite
-          @toWkpage="getloginlited"
-          v-if="this.active === 1 ? true : false"
-        />
-        <showcontent
-          @toUp="toUp"
-          @isbutshow="isbbshow"
-          v-if="this.active === 0 ? true : false"
-        />
-        <uploadlite
-          :touUpdata="toupdata"
-          @upLoadtoWkpage="getUploadinfo"
-          v-if="this.active === 2 ? true : false"
-        />
-        <feedbacklite
-          :tofeedbackdata="userinfo"
-          @fdbktowkpage="fdbktoWkpage"
-          v-if="this.active === 3 ? true : false"
-        />
-      </el-main>
+          <loginlite
+            @toWkpage="getloginlited"
+            v-if="this.active === 1 ? true : false"
+          />
+          <showcontent
+            @toUp="toUp"
+            @isbutshow="isbbshow"
+            v-if="this.active === 0 ? true : false"
+          />
+          <uploadlite
+            :touUpdata="toupdata"
+            @upLoadtoWkpage="getUploadinfo"
+            v-if="this.active === 2 ? true : false"
+          />
+          <feedbacklite
+            :tofeedbackdata="userinfo"
+            @fdbktowkpage="fdbktoWkpage"
+            v-if="this.active === 3 ? true : false"
+          />
+        </el-main>
+      </el-container>
       <el-footer>
         <span style="font-size: 10px"
           >Copyright © 2022 lianqi All Rights Reserved. 连亓 版权所有</span

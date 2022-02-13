@@ -153,8 +153,8 @@ export default {
 
 <style >
 .el-card {
-  min-height: 500px;
-  width: 90%;
+  /* min-height: 500px; */
+  width: 70%;
   margin: 20px auto;
 }
 </style>

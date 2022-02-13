@@ -1,12 +1,12 @@
 <template>
   <div class="teacher">
-    <el-container>
+    <el-container style="height: 100vh">
       <el-header>
         <myheader :cdate="userdata" />
       </el-header>
-      <el-container>
-        <el-aside width="200px"
-          ><el-menu
+      <el-container style="flex: 1">
+        <el-aside width="200px">
+          <el-menu
             router
             class="el-menu-vertical"
             @open="handleOpen"
@@ -29,19 +29,21 @@
               <i class="el-icon-setting"></i>
               <span slot="title">反馈管理</span>
             </el-menu-item>
-          </el-menu></el-aside
-        >
-        <el-main style="padding: 0">
-          <router-view></router-view>
-        </el-main>
+          </el-menu>
+        </el-aside>
+        <el-container>
+          <el-main style="padding: 0">
+            <router-view></router-view>
+          </el-main>
+        </el-container>
       </el-container>
+      <el-footer>
+        <span style="font-size: 10px"
+          >Copyright © 2022 lianqi All Rights Reserved. 连亓 版权所有</span
+        >
+        <span style="font-size: 10px"> ｜备案号：xxxxxxxxxx</span>
+      </el-footer>
     </el-container>
-    <el-footer>
-      <span style="font-size: 10px"
-        >Copyright © 2022 lianqi All Rights Reserved. 连亓 版权所有</span
-      >
-      <span style="font-size: 10px"> ｜备案号：xxxxxxxxxx</span>
-    </el-footer>
   </div>
 </template>
 
@@ -93,7 +95,7 @@ export default {
   /* height: 60px; */
   width: 100%;
   /* position: absolute; */
-  bottom: 0px;
-  left: 0px;
+  /* bottom: 0px;
+  left: 0px; */
 }
 </style>

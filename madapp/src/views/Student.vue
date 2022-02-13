@@ -18,92 +18,111 @@
         <el-button type="primary" @click="islookshow = false">关闭</el-button>
       </span>
     </el-dialog>
-    <el-container>
+    <el-container style="height: 100vh">
       <el-header>
         <myheader :cdate="userdata" />
       </el-header>
-      <el-container>
-        <el-container>
-          <el-main style="padding: 0px">
-            <div style="margin: 20px">
-              <el-descriptions title="课程信息" :column="4">
-                <el-descriptions-item label="课程名称">{{
-                  courseinfo.course_name
-                }}</el-descriptions-item>
-                <el-descriptions-item label="目前作业数量">{{
-                  tableData.length
-                }}</el-descriptions-item>
-              </el-descriptions>
-            </div>
-            <el-divider></el-divider>
-            <el-table
-              :data="
-                tableData.filter(
-                  (data) =>
-                    !search ||
-                    data.howk_name.toLowerCase().includes(search.toLowerCase())
-                )
-              "
-              style="width: 100%"
-            >
-              <el-table-column label="作业名称" prop="howk_name">
-              </el-table-column>
-              <el-table-column label="创建时间" prop="createdAt">
-              </el-table-column>
-              <el-table-column label="截止时间" prop="howk_deadline">
-              </el-table-column>
-              <el-table-column label="是否完成" prop="howk_done2">
-              </el-table-column>
-              <el-table-column label="分数" prop=""> </el-table-column>
-              <el-table-column align="right" min-width="150">
-                <template #header>
-                  <el-input
-                    v-model="search"
-                    size="mini"
-                    placeholder="输入作业名称关键字搜索"
-                  />
-                </template>
-                <template #default="scope">
-                  <el-button
-                    size="mini"
-                    @click="handleLook(scope.row)"
-                    :disabled="scope.row.howk_done2 === '未完成'"
-                  >
-                    查看
-                  </el-button>
-                  <el-button
-                    size="mini"
-                    @click="handleFeedback(scope.row)"
-                    :disabled="scope.row.howk_done2 === '未完成'"
-                  >
-                    反馈
-                  </el-button>
-                  <el-button
-                    size="mini"
-                    :type="scope.row.howk_done2 === '未完成' ? 'danger' : ''"
-                    @click="handleUpload(scope.row)"
-                  >
-                    {{ scope.row.howk_done2 === '未完成' ? '上传' : '重传' }}
-                  </el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-main>
-          <el-footer>
-            <span style="font-size: 10px"
-              >Copyright © 2022 lianqi All Rights Reserved. 连亓 版权所有</span
-            >
-            <span style="font-size: 10px"> ｜备案号：xxxxxxxxxx</span>
-          </el-footer>
-        </el-container>
+      <el-container style="flex: 1">
+        <el-main style="padding: 0px">
+          <div style="margin: 20px">
+            <el-descriptions title="课程信息" :column="4">
+              <el-descriptions-item label="课程名称">{{
+                courseinfo.course_name
+              }}</el-descriptions-item>
+              <el-descriptions-item label="目前作业数量">{{
+                tableData.length
+              }}</el-descriptions-item>
+            </el-descriptions>
+          </div>
+          <el-divider></el-divider>
+          <el-table
+            :data="
+              tableData.filter(
+                (data) =>
+                  !search ||
+                  data.howk_name.toLowerCase().includes(search.toLowerCase())
+              )
+            "
+            style="width: 100%"
+          >
+            <el-table-column label="作业名称" prop="howk_name">
+            </el-table-column>
+            <el-table-column label="创建时间" prop="createdAt">
+            </el-table-column>
+            <el-table-column label="截止时间" prop="howk_deadline">
+            </el-table-column>
+            <el-table-column label="是否完成">
+              <template slot-scope="scope">
+                <el-tag
+                  effect="dark"
+                  :type="
+                    scope.row.howk_done2 === '未完成' ? 'warning' : 'success'
+                  "
+                  >{{ scope.row.howk_done2 }}</el-tag
+                >
+              </template>
+            </el-table-column>
+            <el-table-column label="分数" width="150">
+              <template slot-scope="scope">
+                <el-rate
+                  v-if="scope.row.howk_done.hk_done_score"
+                  v-model="scope.row.howk_done.hk_done_score"
+                  disabled
+                  show-score
+                  score-template="{value}"
+                ></el-rate>
+                <p v-if="!scope.row.howk_done.hk_done_score">未打分</p>
+              </template>
+              <!-- <template #default="scope">
+              </template> -->
+            </el-table-column>
+            <el-table-column align="right" min-width="150">
+              <template #header>
+                <el-input
+                  v-model="search"
+                  size="mini"
+                  placeholder="输入作业名称关键字搜索"
+                />
+              </template>
+              <template #default="scope">
+                <el-button
+                  size="mini"
+                  @click="handleLook(scope.row)"
+                  :disabled="scope.row.howk_done2 === '未完成'"
+                >
+                  查看
+                </el-button>
+                <el-button
+                  size="mini"
+                  @click="handleFeedback(scope.row)"
+                  :disabled="scope.row.howk_done2 === '未完成'"
+                >
+                  反馈
+                </el-button>
+                <el-button
+                  size="mini"
+                  :type="scope.row.howk_done2 === '未完成' ? 'danger' : ''"
+                  @click="handleUpload(scope.row)"
+                >
+                  {{ scope.row.howk_done2 === '未完成' ? '上传' : '重传' }}
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-main>
       </el-container>
+      <el-footer>
+        <span style="font-size: 10px"
+          >Copyright © 2022 lianqi All Rights Reserved. 连亓 版权所有</span
+        >
+        <span style="font-size: 10px"> ｜备案号：xxxxxxxxxx</span>
+      </el-footer>
     </el-container>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
-import downloadjs from 'downloadjs'
 import myheader from '../components/myheader.vue'
 export default {
   name: 'student',
@@ -180,6 +199,7 @@ export default {
       let r = '未完成'
       val.forEach((e) => {
         if (e.hk_done_sid === this.sid) {
+          // this.tableData.hk_done_score = e.hk_done_score
           r = '已完成'
           return
         }
@@ -249,11 +269,11 @@ export default {
   color: var(--el-text-color-primary);
   text-align: center;
   line-height: 60px;
-  /* height: 60px; */
-  width: 100%;
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
+  height: 60px;
+  /* width: 100%; */
+  /* position: absolute; */
+  /* bottom: 0px;
+  left: 0px; */
 }
 
 .el-main {
@@ -261,6 +281,7 @@ export default {
   color: var(--el-text-color-primary);
   text-align: center;
   line-height: 100%;
+  margin: 0 100px 0 100px;
 }
 
 body > .el-container {
