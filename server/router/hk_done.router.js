@@ -3,7 +3,7 @@ const Router = require('koa-router')
 const router = new Router({ prefix: '/api/hk_done' })
 
 const { islogin, isHighLeve } = require('../middleware/auth.middleware')
-const { addHkDone } = require('../controller/hk_done.controller')
+const { addHkDone, gethkdonebyid } = require('../controller/hk_done.controller')
 const { qiniuToken, getDownLoadUrl } = require('../middleware/qiniu.middleware')
 
 
@@ -15,6 +15,9 @@ router.post('/add', islogin, addHkDone)
 
 //作业下载
 router.get('/download', getDownLoadUrl)
+
+//根据作业id查找所有提交的作业
+router.get('/gethkdonebyid', gethkdonebyid)
 
 
 module.exports = router

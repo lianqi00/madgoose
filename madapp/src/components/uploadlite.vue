@@ -1,62 +1,79 @@
 <template>
   <div class="uploadlite">
     <el-card align="center">
-      <el-descriptions title="上传信息">
-        <el-descriptions-item label="姓名">{{
-          userdata.user_name
-        }}</el-descriptions-item>
-        <el-descriptions-item label="学号">{{
-          userdata.user_number
-        }}</el-descriptions-item>
-        <el-descriptions-item label="课程">{{
-          touUpdata.coursename
-        }}</el-descriptions-item>
-        <el-descriptions-item label="作业">
-          <el-tag size="small">{{ touUpdata.howk_name }}</el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item label="文件类型限制">{{
-          touUpdata.howk_uptypetext
-        }}</el-descriptions-item>
-        <el-descriptions-item label="文件大小限制">{{
-          touUpdata.howk_size + 'MB'
-        }}</el-descriptions-item>
-      </el-descriptions>
-      <div style="width: 300px">
-        <el-upload
-          action="#"
-          ref="upload"
-          :http-request="upqiniu"
-          :before-upload="beforeUpload"
-          :limit="1"
-          :accept="touUpdata.howk_uptypetext"
-          :on-exceed="handleExceed"
-          :auto-upload="true"
-          style="margin-top: 20px"
-        >
-          <el-button slot="trigger" size="small" type="primary"
-            >选取文件</el-button
+      <el-result
+        v-if="resultshow"
+        :icon="resultip.icon"
+        :title="resultip.title"
+        :subTitle="resultip.subTitle"
+      >
+        <template slot="extra">
+          <el-button
+            @click="resbtn(resultip.or)"
+            type="primary"
+            size="medium"
+            >{{ resultip.btntext }}</el-button
           >
-          <!-- <el-button
+        </template>
+      </el-result>
+      <div v-if="!resultshow">
+        <el-descriptions title="上传信息">
+          <el-descriptions-item label="姓名">{{
+            userdata.user_name
+          }}</el-descriptions-item>
+          <el-descriptions-item label="学号">{{
+            userdata.user_number
+          }}</el-descriptions-item>
+          <el-descriptions-item label="课程">{{
+            touUpdata.coursename
+          }}</el-descriptions-item>
+          <el-descriptions-item label="作业">
+            <el-tag size="small">{{ touUpdata.howk_name }}</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="文件类型限制">{{
+            touUpdata.howk_uptypetext
+          }}</el-descriptions-item>
+          <el-descriptions-item label="文件大小限制">{{
+            touUpdata.howk_size + 'MB'
+          }}</el-descriptions-item>
+        </el-descriptions>
+        <div style="width: 300px">
+          <el-upload
+            action="#"
+            ref="upload"
+            :http-request="upqiniu"
+            :before-upload="beforeUpload"
+            :limit="1"
+            :accept="touUpdata.howk_uptypetext"
+            :on-exceed="handleExceed"
+            :auto-upload="true"
+            style="margin-top: 20px"
+          >
+            <el-button slot="trigger" size="small" type="primary"
+              >选取文件</el-button
+            >
+            <!-- <el-button
             style="margin-left: 10px"
             size="small"
             type="success"
             @click="submitUpload"
             >上传到服务器</el-button
           > -->
-          <div slot="tip" class="el-upload__tip">
-            只能上传{{ touUpdata.howk_uptypetext }}，且不超过{{
-              touUpdata.howk_size
-            }}MB
-            <!-- {{ touUpdata.howk_uptype.toString() }} -->
-          </div>
-        </el-upload>
-      </div>
-      <div style="margin-top: 20px; width: 300px">
-        <el-progress
-          :text-inside="true"
-          :stroke-width="20"
-          :percentage="percentage"
-        ></el-progress>
+            <div slot="tip" class="el-upload__tip">
+              只能上传{{ touUpdata.howk_uptypetext }}，且不超过{{
+                touUpdata.howk_size
+              }}MB
+              <!-- {{ touUpdata.howk_uptype.toString() }} -->
+            </div>
+          </el-upload>
+        </div>
+        <div style="margin-top: 20px; width: 300px">
+          <el-progress
+            :text-inside="true"
+            :stroke-width="20"
+            :percentage="percentage"
+          ></el-progress>
+        </div>
       </div>
     </el-card>
   </div>
@@ -76,6 +93,14 @@ export default {
   },
   data() {
     return {
+      resultshow: false,
+      resultip: {
+        icon: 'error',
+        title: '错误提示',
+        subTitle: '请根据提示进行操作',
+        btntext: '登录',
+        or: '',
+      },
       fileList: [],
       userdata: {},
       uploadtoken: '',
@@ -84,6 +109,10 @@ export default {
     }
   },
   methods: {
+    resbtn(v) {
+      console.log(v)
+      this.$emit('upLoadtoWkpage', v)
+    },
     upqiniu(e) {
       var file = e.file //Blob 对象，上传的文件
       // console.log(file.name.replace(/.+\./, '.'))
@@ -111,7 +140,7 @@ export default {
       observable.subscribe({
         next: (result) => {
           // 主要用来展示进度
-          console.log(parseInt(result.total.percent))
+          // console.log(parseInt(result.total.percent))
           this.percentage = parseInt(result.total.percent)
         },
         error: (errResult) => {
@@ -128,10 +157,17 @@ export default {
           d.hk_done_sid = this.userdata._id
           // console.log(d)
           this.$http.post('/hk_done/add', d).then((res) => {
-            console.log(res)
-            if (!res) return
+            // console.log(res)
+            if (!res || !res.data.result) return
+            this.resultshow = true
+            this.resultip = {
+              icon: 'success',
+              title: '上传完成',
+              subTitle: '点击下方按钮填写反馈',
+              btntext: '反馈',
+              or: res.data,
+            }
             this.$message.success(res.data.message)
-            this.$emit('upLoadtoWkpage', res.data)
           })
         },
       })

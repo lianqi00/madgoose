@@ -47,5 +47,17 @@ class Hk_doneController {
         }
 
     }
+    //根据作业id查找全部提交的作业
+    async gethkdonebyid(ctx, next) {
+        // console.log(ctx.query);
+        const { _id } = ctx.query
+        const result = await Howk.find({ _id }).populate({ path: 'howk_done' })
+        console.log(result);
+        ctx.body = {
+            code: 0,
+            message: '获取作业成功',
+            result: result[0].howk_done
+        }
+    }
 }
 module.exports = new Hk_doneController()
