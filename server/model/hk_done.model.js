@@ -5,7 +5,7 @@ const { Schema, model } = mongoose
 const hk_doneSchema = new Schema({
     hk_done_sid: {
         type: Schema.Types.ObjectId,
-        ref: 'user',
+        ref: 'User',
         required: true
     },
     hk_done_wk: {

@@ -14,10 +14,16 @@
       </el-descriptions>
       <div v-html="workinfo.howk_content"></div>
       <span slot="footer" class="dialog-footer">
-        <el-button type="warning" @click="download(workinfo)">下载</el-button>
+        <el-button
+          :disabled="workinfo.howk_done2 === '未完成'"
+          type="warning"
+          @click="download(workinfo)"
+          >下载</el-button
+        >
         <el-button type="primary" @click="islookshow = false">关闭</el-button>
       </span>
     </el-dialog>
+
     <el-container style="height: 100vh">
       <el-header>
         <myheader :cdate="userdata" />
@@ -25,7 +31,7 @@
       <el-container style="flex: 1">
         <el-main style="padding: 0px">
           <div style="margin: 20px">
-            <el-descriptions title="课程信息" :column="4">
+            <el-descriptions title="课程信息" :column="1" border>
               <el-descriptions-item label="课程名称">{{
                 courseinfo.course_name
               }}</el-descriptions-item>
@@ -44,12 +50,27 @@
               )
             "
             style="width: 100%"
+            v-loading="loading"
           >
             <el-table-column label="作业名称" prop="howk_name">
             </el-table-column>
-            <el-table-column label="创建时间" prop="createdAt">
+            <el-table-column label="创建时间" prop="createdAt2">
             </el-table-column>
-            <el-table-column label="截止时间" prop="howk_deadline">
+            <el-table-column label="截止时间" prop="howk_deadline2">
+            </el-table-column>
+            <el-table-column label="剩余时间" min-width="120">
+              <template slot-scope="scope">
+                <el-tag
+                  effect="dark"
+                  :type="
+                    countdown(scope.row.howk_deadline) === '已过截止日期'
+                      ? 'danger'
+                      : 'success'
+                  "
+                >
+                  {{ countdown(scope.row.howk_deadline) }}
+                </el-tag>
+              </template>
             </el-table-column>
             <el-table-column label="是否完成">
               <template slot-scope="scope">
@@ -62,13 +83,14 @@
                 >
               </template>
             </el-table-column>
-            <el-table-column label="分数" width="150">
+            <el-table-column label="分数" width="170">
               <template slot-scope="scope">
                 <el-rate
                   v-if="scope.row.howk_done.hk_done_score"
                   v-model="scope.row.howk_done.hk_done_score"
                   disabled
                   show-score
+                  text-color="#ff9900"
                   score-template="{value}"
                 ></el-rate>
                 <p v-if="!scope.row.howk_done.hk_done_score">未打分</p>
@@ -76,7 +98,7 @@
               <!-- <template #default="scope">
               </template> -->
             </el-table-column>
-            <el-table-column align="right" min-width="150">
+            <el-table-column align="right" min-width="150" fixed="right">
               <template #header>
                 <el-input
                   v-model="search"
@@ -85,37 +107,35 @@
                 />
               </template>
               <template #default="scope">
-                <el-button
-                  size="mini"
-                  @click="handleLook(scope.row)"
-                  :disabled="scope.row.howk_done2 === '未完成'"
-                >
+                <el-button size="mini" @click="handleLook(scope.row)">
                   查看
                 </el-button>
-                <el-button
-                  size="mini"
-                  @click="handleFeedback(scope.row)"
-                  :disabled="scope.row.howk_done2 === '未完成'"
+
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  :content="
+                    scope.row.howk_done2 === '未完成'
+                      ? '点击上传会自动跳转到交作业链接，并需要重新登录'
+                      : '点击重传会覆盖之前作业'
+                  "
+                  placement="top-start"
                 >
-                  反馈
-                </el-button>
-                <el-button
-                  size="mini"
-                  :type="scope.row.howk_done2 === '未完成' ? 'danger' : ''"
-                  @click="handleUpload(scope.row)"
-                >
-                  {{ scope.row.howk_done2 === '未完成' ? '上传' : '重传' }}
-                </el-button>
+                  <el-button
+                    size="mini"
+                    :type="scope.row.howk_done2 === '未完成' ? 'danger' : ''"
+                    @click="handleUpload(scope.row)"
+                  >
+                    {{ scope.row.howk_done2 === '未完成' ? '上传' : '重传' }}
+                  </el-button>
+                </el-tooltip>
               </template>
             </el-table-column>
           </el-table>
         </el-main>
       </el-container>
       <el-footer>
-        <span style="font-size: 10px"
-          >Copyright © 2022 lianqi All Rights Reserved. 连亓 版权所有</span
-        >
-        <span style="font-size: 10px"> ｜备案号：xxxxxxxxxx</span>
+        <myfooter></myfooter>
       </el-footer>
     </el-container>
   </div>
@@ -124,12 +144,14 @@
 <script>
 import moment from 'moment'
 import myheader from '../components/myheader.vue'
+import myfooter from '../components/myfooter.vue'
 export default {
   name: 'student',
-  components: { myheader },
+  components: { myheader, myfooter },
   // props:[],
   data() {
     return {
+      loading: true,
       userdata: '',
       courseinfo: '',
       workinfo: '',
@@ -145,27 +167,6 @@ export default {
     this.sid = this.$route.params.id
     // console.log(this.sid)
     this.fetch()
-
-    // this.$http
-    //   .get('/howk/')
-    //   .then((res) => {
-    //     // console.log(res.data.result)
-    //     let result = res.data.result
-    //     for (let i = 0; i < result.length; i++) {
-    //       const element = result[i]
-    //       element.createdAt = moment(element.createdAt).format('MM月DD日 HH:mm')
-    //       element.howk_deadline = moment(element.howk_deadline).format(
-    //         'MM月DD日 HH:mm'
-    //       )
-    //       // console.log(element.howk_done)
-    //       element.howk_done = element.howk_done.length === 0 ? '未完成' : '完成'
-    //     }
-    //     this.tableData = result
-    //     console.log(result)
-    //   })
-    //   .catch((err) => {
-    //     console.log(err)
-    //   })
   },
   methods: {
     fetch() {
@@ -178,20 +179,22 @@ export default {
         let oridata = user_course.course_howk
         for (let i = 0; i < oridata.length; i++) {
           const element = oridata[i]
-          element.createdAt = this.formatdate(element.createdAt)
-          element.howk_deadline = this.formatdate(element.howk_deadline)
+          element.createdAt2 = this.formatdate(element.createdAt)
+          element.howk_deadline2 = this.formatdate(element.howk_deadline)
 
           // console.log(element.howk_done)
           element.howk_done2 = this.workisdone(element.howk_done)
           element.howk_done = this.workself(element.howk_done)
         }
         this.tableData = oridata
-        console.log(oridata)
-        console.log(this.courseinfo.course_howk)
+        // console.log(oridata)
+        // console.log(this.courseinfo.course_howk)
+        this.loading = false
       })
     },
     //格式化时间
     formatdate(val) {
+      if (!val) return '无'
       return moment(val).format('MM月DD日 HH:mm')
     },
     // 确定作业是否完成
@@ -244,13 +247,50 @@ export default {
     },
     handleUpload(row) {
       console.log(row)
+      // console.log(this.courseinfo)
+      //先判断作业是否超出时间
+      const { howk_deadline } = row
+      const ispassdeadline = this.countdown(howk_deadline)
+      if (ispassdeadline === '已过截止日期') {
+        this.$message.error(ispassdeadline)
+        return
+      }
+      //再判断是否完成
+      if (row.howk_done2 === '已完成') {
+        //完成就弹出重新上传对话框
+        console.log('走完成的代码了')
+        return
+      }
+      //未完成就跳转到wkpage
+      const howkid = row._id
+      const courseid = this.courseinfo._id
+      this.$router.push('/wkpage/' + howkid + '/' + courseid)
     },
     handleFeedback(row) {
       console.log(row)
     },
-    // handleClose() {
-    //   this.time = ''
-    // },
+    countdown(deadline) {
+      // console.log(this.utcdate)
+      const stamdate = Date.parse(deadline)
+      // console.log(stamdate)
+      // console.log(Date.now())
+      const lim = stamdate - Date.now()
+      // console.log(lim < 0)
+      if (lim < 0) return '已过截止日期'
+      const a = lim / 1000
+      const m = parseInt((a % 3600) / 60)
+      const h = parseInt((a % 86400) / 3600)
+      const d = parseInt(a / 86400)
+      const text = d + '天' + h + '小时' + m + '分钟'
+      if (d <= 1) {
+        this.tagtype = 'danger'
+      } else if (d <= 2) {
+        this.tagtype = 'warning'
+      } else {
+        this.tagtype = 'success'
+      }
+      return text
+    },
   },
 }
 </script>

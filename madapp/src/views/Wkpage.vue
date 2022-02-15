@@ -59,10 +59,7 @@
         </el-main>
       </el-container>
       <el-footer>
-        <span style="font-size: 10px"
-          >Copyright © 2022 lianqi All Rights Reserved. 连亓 版权所有</span
-        >
-        <span style="font-size: 10px"> ｜备案号：xxxxxxxxxx</span>
+        <myfooter></myfooter>
       </el-footer>
     </el-container>
   </div>
@@ -74,8 +71,16 @@ import loginlite from '../components/loginlite.vue'
 import Showcontent from '../components/showcontent.vue'
 import uploadlite from '../components/uploadlite.vue'
 import myheader from '../components/myheader.vue'
+import Myfooter from '../components/myfooter.vue'
 export default {
-  components: { loginlite, Showcontent, uploadlite, Feedbacklite, myheader },
+  components: {
+    loginlite,
+    Showcontent,
+    uploadlite,
+    Feedbacklite,
+    myheader,
+    Myfooter,
+  },
   data() {
     return {
       userinfo: {},

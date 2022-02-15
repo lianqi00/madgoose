@@ -106,7 +106,7 @@ class HowkController {
     }
     //删除作业
     async deleteHowk(ctx, next) {
-        // console.log(ctx.query);
+        console.log(ctx.query);
         const { _id, course_id } = ctx.query
         try {
             const h = await Howk.deleteOne({ _id })

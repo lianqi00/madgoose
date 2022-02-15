@@ -1,22 +1,22 @@
 <template>
   <div class="feedbacklite">
     <el-card>
-      <!-- <div>
-       
-        <p>1、对于景别的掌握程度。</p>
-        <el-radio-group v-model="radio">
-          <el-radio :label="1">1分</el-radio>
-          <el-radio :label="2">2分</el-radio>
-          <el-radio :label="3">3分</el-radio>
-        </el-radio-group>
-        <p>1、对于景别的掌握程度。</p>
-        <el-radio-group v-model="radio">
-          <el-radio :label="1">1分</el-radio>
-          <el-radio :label="2">2分</el-radio>
-          <el-radio :label="3">3分</el-radio>
-        </el-radio-group>
-      </div> -->
-      <div style="width: 500px; margin: 0 auto">
+      <el-result
+        v-if="resultshow"
+        :icon="resultip.icon"
+        :title="resultip.title"
+        :subTitle="resultip.subTitle"
+      >
+        <template slot="extra">
+          <el-button
+            @click="gotostudent(resultip.userid)"
+            type="primary"
+            size="medium"
+            >{{ resultip.btntext }}</el-button
+          >
+        </template>
+      </el-result>
+      <div v-if="!resultshow" style="width: 500px; margin: 0 auto">
         <ol>
           <li v-for="(fdbkrow, i) in feedbackdata">
             <p>{{ fdbkrow.feedback_q }}</p>
@@ -32,6 +32,7 @@
             <el-input
               v-if="!fdbkrow.feedback_option.length"
               v-model="fdbkrow.feedback_a"
+              type="textarea"
             ></el-input>
           </li>
         </ol>
@@ -51,10 +52,21 @@ export default {
   },
   data() {
     return {
+      resultshow: false,
+      resultip: {
+        icon: 'error',
+        title: '错误提示',
+        subTitle: '请根据提示进行操作',
+        btntext: '登录',
+        userid: '',
+      },
       feedbackdata: [],
     }
   },
   methods: {
+    gotostudent(v) {
+      this.$emit('fdbktowkpage', v)
+    },
     submitfeedback() {
       // console.log(this.feedbackdata)
       // console.log(this.tofeedbackdata)
@@ -68,11 +80,26 @@ export default {
         newarr.push(obj)
       })
       console.log(newarr)
+      for (let i = 0; i < newarr.length; i++) {
+        const e = newarr[i]
+        if (!e.fd_done_a) {
+          this.$message.error('答案不能为空')
+          return
+        }
+      }
+      // return
       this.$http.post('/feedback/addfeedbackdone', newarr).then((res) => {
         console.log(res)
         if (!res || !res.data.result) return
         this.$message.success(res.data.message)
-        this.$emit('fdbktowkpage', res.data.result)
+        this.resultshow = true
+        this.resultip = {
+          icon: 'success',
+          title: '提交完成',
+          subTitle: '点击下方按钮进入后台查看所有作业',
+          btntext: '登录',
+          userid: res.data.result,
+        }
       })
     },
     getfeedback() {

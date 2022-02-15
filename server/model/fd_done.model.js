@@ -5,7 +5,7 @@ const { Schema, model } = mongoose
 const fd_doneSchema = new Schema({
     fd_done_sid: {
         type: Schema.Types.ObjectId,
-        ref: 'user',
+        ref: 'User',
         required: true
     },
     fd_done_fid: {

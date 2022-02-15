@@ -2,7 +2,7 @@
   <div class="showcontent">
     <el-card>
       <el-empty :description="emptyetxt" v-if="!empty"></el-empty>
-      <el-descriptions title="作业信息" v-if="empty">
+      <el-descriptions title="作业信息" v-if="empty" border>
         <el-descriptions-item label="作业名称">{{
           this.data.howk_name
         }}</el-descriptions-item>
@@ -44,6 +44,7 @@ export default {
     quillEditor,
     // MvCountDown,
   },
+
   created() {
     this.fetch()
   },
@@ -78,6 +79,12 @@ export default {
     //   }, 1000)
     // },
     fetch() {
+      const loading = this.$loading({
+        lock: true,
+        text: '正在加载...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(255, 255, 255, 0.5)',
+      })
       // console.log(this.$route.params.id)
       let id = this.$route.params.id
       let _id = this.$route.params.cid
@@ -116,6 +123,7 @@ export default {
         )
         // console.log(this.data)
       })
+      loading.close()
     },
     countdown(deadline) {
       // console.log(this.utcdate)

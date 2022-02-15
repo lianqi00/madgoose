@@ -59,5 +59,19 @@ class Hk_doneController {
             result: result[0].howk_done
         }
     }
+    //给作业打分
+    async hkrate(ctx, next) {
+        // console.log(ctx.request.body);
+        const { _id, hk_done_score } = ctx.request.body
+        const result = await Hk_done.findByIdAndUpdate({ _id }, { hk_done_score }, { new: true })
+        // console.log(result);
+        ctx.body = {
+            code: 0,
+            message: '打分成功',
+            result
+        }
+
+
+    }
 }
 module.exports = new Hk_doneController()

@@ -74,6 +74,21 @@ class FeedbackController {
             result
         }
     }
+    //根据反馈id获取反馈并携带所有答案
+    async getfeedbackbyid(ctx, next) {
+        // console.log(ctx.query);
+        const { howk_feedback } = ctx.request.body
+        // console.log(howk_feedback);
+        // console.log(h);
+        const fbres = await Feedback.find({ _id: { $in: howk_feedback } })
+        const fdonres = await Fd_done.find({ fd_done_fid: { $in: howk_feedback } }).populate({ path: 'fd_done_sid' })
+        ctx.body = {
+            code: 0,
+            message: '获取反馈和答案成功',
+            result: { fbres, fdonres }
+        }
+
+    }
 }
 
 module.exports = new FeedbackController()

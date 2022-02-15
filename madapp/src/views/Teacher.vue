@@ -38,10 +38,7 @@
         </el-container>
       </el-container>
       <el-footer>
-        <span style="font-size: 10px"
-          >Copyright © 2022 lianqi All Rights Reserved. 连亓 版权所有</span
-        >
-        <span style="font-size: 10px"> ｜备案号：xxxxxxxxxx</span>
+        <myfooter></myfooter>
       </el-footer>
     </el-container>
   </div>
@@ -49,9 +46,10 @@
 
 <script>
 import myheader from '../components/myheader.vue'
+import myfooter from '../components/myfooter.vue'
 
 export default {
-  components: { myheader },
+  components: { myheader, myfooter },
   created() {
     this.fetch()
   },
