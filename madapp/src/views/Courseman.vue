@@ -43,13 +43,13 @@ export default {
   methods: {
     fetch() {
       this.$http.get('/course/gethowk').then((res) => {
-        console.log(res)
+        // console.log(res)
         this.coursedata = res.data.result
         // this.bus.$emit('tostudentman', this.coursedata)
       })
     },
     submit() {
-      console.log(this.formdata)
+      // console.log(this.formdata)
       this.$http.post('/course/add', this.formdata).then((res) => {
         // console.log(res)
         this.$message({
@@ -61,7 +61,7 @@ export default {
       })
     },
     handleClick(row) {
-      console.log(row)
+      // console.log(row)
       this.$http
         .delete('/course/delecourse', {
           params: {
@@ -69,7 +69,7 @@ export default {
           },
         })
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           this.$message({
             type: 'success',
             message: res.data.message,

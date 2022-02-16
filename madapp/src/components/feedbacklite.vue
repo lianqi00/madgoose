@@ -79,7 +79,7 @@ export default {
         obj.fd_done_a = e.feedback_a
         newarr.push(obj)
       })
-      console.log(newarr)
+      // console.log(newarr)
       for (let i = 0; i < newarr.length; i++) {
         const e = newarr[i]
         if (!e.fd_done_a) {
@@ -89,7 +89,7 @@ export default {
       }
       // return
       this.$http.post('/feedback/addfeedbackdone', newarr).then((res) => {
-        console.log(res)
+        // console.log(res)
         if (!res || !res.data.result) return
         this.$message.success(res.data.message)
         this.resultshow = true
@@ -109,7 +109,7 @@ export default {
         .get('/feedback/getfeedbackbyhowkid', { params: { _id: id } })
         .then((res) => {
           this.feedbackdata = res.data.result
-          console.log(this.feedbackdata)
+          // console.log(this.feedbackdata)
         })
     },
   },

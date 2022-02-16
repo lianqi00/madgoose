@@ -19,7 +19,7 @@ const app = new Koa()
 //连接数据库
 require('./db/mgdb')
 //跨域
-// app.use(cors());
+app.use(cors());
 
 //注册一些中间件
 app.use(koaBody({

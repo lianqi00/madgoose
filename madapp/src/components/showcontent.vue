@@ -63,21 +63,6 @@ export default {
     }
   },
   methods: {
-    // tnow: (v) => {
-    //   setInterval(function () {
-    //     const stamdate = Date.parse(v)
-    //     // this.now = Date.now()
-    //     // console.log(stamdate)
-    //     const a = (stamdate - Date.now()) / 1000
-    //     const s = parseInt(a % 60)
-    //     const m = parseInt((a % 3600) / 60)
-    //     const h = parseInt((a % 86400) / 3600)
-    //     const d = parseInt(a / 86400)
-    //     const text = d + '天' + h + '小时' + m + '分钟' + s + '秒'
-    //     console.log(text)
-    //     return text
-    //   }, 1000)
-    // },
     fetch() {
       const loading = this.$loading({
         lock: true,
@@ -131,7 +116,7 @@ export default {
       // console.log(stamdate)
       // console.log(Date.now())
       const lim = stamdate - Date.now()
-      console.log(lim < 0)
+      // console.log(lim < 0)
       if (lim < 0) {
         this.empty = false
         this.emptyetxt = '已过截止时间，无法上传作业！'

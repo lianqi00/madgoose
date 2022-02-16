@@ -110,7 +110,7 @@ export default {
       // console.log(v)
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
-          console.log(v)
+          // console.log(v)
           const { password } = v
           this.$http.patch('/user/changepassword', { password }).then((res) => {
             // console.log(res)

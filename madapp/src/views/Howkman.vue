@@ -494,7 +494,7 @@ export default {
       this.getvideosrc(this.howk_done[i].key)
       this.nowdex = i + 1
       // console.log(this.howk_donelooking)
-      console.log(this.howk_donelooking.hk_done_score)
+      // console.log(this.howk_donelooking.hk_done_score)
       this.rate = 0
       if (this.howk_donelooking.hk_done_score) {
         this.rate = this.howk_donelooking.hk_done_score

@@ -110,7 +110,7 @@ export default {
   },
   methods: {
     resbtn(v) {
-      console.log(v)
+      // console.log(v)
       this.$emit('upLoadtoWkpage', v)
     },
     upqiniu(e) {
@@ -129,7 +129,7 @@ export default {
       }
 
       const key = this.filenamest + file.name.replace(/.+\./, '.')
-      console.log(key)
+      // console.log(key)
       var observable = qiniu.upload(
         file,
         key,
@@ -145,7 +145,7 @@ export default {
         },
         error: (errResult) => {
           // 失败报错信息
-          console.log(errResult)
+          // console.log(errResult)
           this.$message.error(errResult.data.error)
         },
         complete: (result) => {
@@ -196,7 +196,7 @@ export default {
     //   console.log(e)
     // },
     beforeUpload(e) {
-      console.log(e)
+      // console.log(e)
       const typepk = e.type === this.touUpdata.howk_uptype[0]
       // console.log(e.type, this.touUpdata.howk_uptype[0])
       const sizepk = e.size <= this.touUpdata.howk_size * 1024 * 1024
@@ -219,7 +219,7 @@ export default {
     getuploadtoken() {
       this.$http.get('/user/fetchtoken').then((res) => {
         this.uploadtoken = res.data.result
-        console.log(this.uploadtoken)
+        // console.log(this.uploadtoken)
       })
     },
     handleExceed(files, fileList) {

@@ -142,12 +142,12 @@ export default {
   },
   methods: {
     onsuccess(res) {
-      console.log(res)
+      // console.log(res)
       this.$message.success(res.message)
       this.fetch()
     },
     onerror(res) {
-      console.log(res)
+      // console.log(res)
       this.$message.error(res.message)
     },
     handleDeleteUser(row) {
@@ -161,13 +161,13 @@ export default {
         }
       )
         .then(() => {
-          console.log(row.user_course._id)
+          // console.log(row.user_course._id)
           this.$http
             .delete('/user/deluser', {
               params: { _id: row._id, courseid: row.user_course._id },
             })
             .then((res) => {
-              console.log(res)
+              // console.log(res)
               this.$message({
                 type: 'success',
                 message: res.data.message,
@@ -183,7 +183,7 @@ export default {
         })
     },
     manystu(file) {
-      console.log(file)
+      // console.log(file)
     },
     confrim(val) {
       // console.log(val)
@@ -191,7 +191,7 @@ export default {
         val.password = val.user_number
         // console.log(val)
         this.$http.post('/user/register', val).then((res) => {
-          console.log(res)
+          // console.log(res)
           if (!res) return
           this.$message.success(res.data.message)
           this.userdialog = false
@@ -199,9 +199,9 @@ export default {
         })
         return
       }
-      console.log(val)
+      // console.log(val)
       this.$http.patch('/user/moduserinfo', val).then((res) => {
-        console.log(res)
+        // console.log(res)
         if (!res) return
         this.$message.success(res.data.message)
         this.userdialog = false
@@ -229,7 +229,7 @@ export default {
       })
     },
     handleResetPassword(row) {
-      console.log(row._id)
+      // console.log(row._id)
       this.$http
         .get('/user/resetpassword', { params: { _id: row._id } })
         .then((res) => {
@@ -244,7 +244,7 @@ export default {
     },
     fetch() {
       this.$http.get('/user/').then((res) => {
-        console.log(res)
+        // console.log(res)
         this.tableData = res.data.result
       })
     },
@@ -253,7 +253,7 @@ export default {
       this.stutitle = '修改学生信息'
       this.userdialog = true
       this.studata = row
-      console.log(row)
+      // console.log(row)
     },
   },
 }

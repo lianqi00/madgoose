@@ -98,11 +98,11 @@ export default {
       this.next()
     },
     getUploadinfo(d) {
-      console.log(d)
+      // console.log(d)
       this.next()
     },
     toUp(d) {
-      console.log(d)
+      // console.log(d)
       this.toupdata = d
     },
     getheaderdate(d) {
@@ -115,9 +115,9 @@ export default {
       this.isbshow = v
     },
     getloginlited(data) {
-      console.log('@@@', data)
+      // console.log('@@@', data)
       this.userinfo = data.result.userInfo
-      console.log(this.userinfo)
+      // console.log(this.userinfo)
       if (data.code === 0) {
         this.next()
       }

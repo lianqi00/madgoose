@@ -58,13 +58,13 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(this.ruleForm)
+          // console.log(this.ruleForm)
           this.$http.post('/user/login', this.ruleForm).then((res) => {
             // console.log(res)
             if (!res || !res.data.result) {
               return
             }
-            console.log(res)
+            // console.log(res)
             sessionStorage.token = res.data.result.token
             if (res.data.result.userInfo.user_type === 1) {
               this.$router.push('/teacher')
@@ -73,7 +73,7 @@ export default {
             }
           })
         } else {
-          console.log('error submit!!')
+          // console.log('error submit!!')
           return false
         }
       })

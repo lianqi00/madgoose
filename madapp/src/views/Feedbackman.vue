@@ -101,11 +101,11 @@ export default {
   },
   methods: {
     handleClick(val) {
-      console.log(val)
+      // console.log(val)
     },
     getfeedback() {
       this.$http.get('/feedback/getfeedback').then((res) => {
-        console.log(res)
+        // console.log(res)
         //   feedbacktable
         const arr = res.data.result
         const newarr = []
@@ -137,7 +137,7 @@ export default {
     },
     fetch() {
       this.$http.get('/course/gethowk').then((res) => {
-        console.log(res)
+        // console.log(res)
         let arr = res.data.result
         let newarr = []
         arr.forEach((e) => {
@@ -160,7 +160,7 @@ export default {
       })
     },
     submitForm() {
-      console.log(this.dynamicValidateForm)
+      // console.log(this.dynamicValidateForm)
       const { feedback_q, feedback_option } = this.dynamicValidateForm
       if (!feedback_q || !feedback_option) {
         this.$message.warning('问题和选项不能为空')
@@ -169,7 +169,7 @@ export default {
       this.$http
         .post('/feedback/addfeedback', this.dynamicValidateForm)
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           if (!res || !res.data.result) return
           this.$message.success(res.data.message)
           this.addfeedbackshow = false
@@ -204,7 +204,7 @@ export default {
       this.addfeedbackshow = true
     },
     afbsclose() {
-      console.log(11111)
+      // console.log(11111)
       this.addfeedbackshow = false
       //   this.resetForm('dynamicValidateForm')
       this.dynamicValidateForm = {

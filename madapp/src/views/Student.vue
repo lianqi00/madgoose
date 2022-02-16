@@ -220,7 +220,7 @@ export default {
       return wk
     },
     handleLook(row) {
-      console.log(row)
+      // console.log(row)
       // console.log(this.userdata)
 
       this.workinfo = row
@@ -228,10 +228,10 @@ export default {
       this.islookshow = true
     },
     download(val) {
-      console.log(val.howk_done.key)
+      // console.log(val.howk_done.key)
       const key = val.howk_done.key
       this.$http.get('/hk_done/download', { params: { key } }).then((res) => {
-        console.log(res)
+        // console.log(res)
         let link = document.createElement('a')
         link.style.display = 'none'
         link.href = res.data.result
@@ -246,7 +246,7 @@ export default {
       })
     },
     handleUpload(row) {
-      console.log(row)
+      // console.log(row)
       // console.log(this.courseinfo)
       //先判断作业是否超出时间
       const { howk_deadline } = row
@@ -258,7 +258,7 @@ export default {
       //再判断是否完成
       if (row.howk_done2 === '已完成') {
         //完成就弹出重新上传对话框
-        console.log('走完成的代码了')
+        // console.log('走完成的代码了')
         return
       }
       //未完成就跳转到wkpage
@@ -267,7 +267,7 @@ export default {
       this.$router.push('/wkpage/' + howkid + '/' + courseid)
     },
     handleFeedback(row) {
-      console.log(row)
+      // console.log(row)
     },
     countdown(deadline) {
       // console.log(this.utcdate)
