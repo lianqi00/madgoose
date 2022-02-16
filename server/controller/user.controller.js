@@ -338,7 +338,7 @@ class UserController {
                 }
             })
         })
-        console.log(sheetpase)
+        // console.log(sheetpase)
         try {
             const result = await User.insertMany(sheetpase)
             // console.log(result);

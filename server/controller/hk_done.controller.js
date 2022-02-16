@@ -52,7 +52,7 @@ class Hk_doneController {
         // console.log(ctx.query);
         const { _id } = ctx.query
         const result = await Howk.find({ _id }).populate({ path: 'howk_done' })
-        console.log(result);
+        // console.log(result);
         ctx.body = {
             code: 0,
             message: '获取作业成功',

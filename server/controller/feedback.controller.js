@@ -14,7 +14,7 @@ class FeedbackController {
         const { feedback_courseandhowk, ...res } = ctx.request.body
         // console.log(feedback_courseandhowk);
         const result = await Feedback.create(res)
-        console.log(result);
+        // console.log(result);
         if (!result) {
             ctx.status = 500
             ctx.body = {
@@ -43,7 +43,7 @@ class FeedbackController {
                     path: 'howk_feedback'
                 }
             })
-        console.log(result);
+        // console.log(result);
         ctx.body = {
             code: 0,
             message: '获取反馈成功',
@@ -52,10 +52,10 @@ class FeedbackController {
     }
     //根据作业id获取反馈
     async getfeedbackbyhowkid(ctx, next) {
-        console.log(ctx.query);
+        // console.log(ctx.query);
         const { _id } = ctx.query
         const result = await Howk.findById({ _id }).populate({ path: 'howk_feedback' })
-        console.log(result.howk_feedback);
+        // console.log(result.howk_feedback);
         ctx.body = {
             code: 0,
             message: '获取反馈成功',
