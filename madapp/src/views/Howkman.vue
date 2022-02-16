@@ -526,10 +526,17 @@ export default {
     },
     //复制按钮
     handleCopy(row) {
-      console.log(row)
+      // console.log(row)
+      // console.log(cc)
+
+      // 开发使用
       this.copydialog = true
+      // const copylink =
+      //   'http://localhost:8080/wkpage/' + row._id + '/' + row.course_id
+
+      // 上线使用
       const copylink =
-        'http://localhost:8080/wkpage/' + row._id + '/' + row.course_id
+        window.location.origin + '/wkpage/' + row._id + '/' + row.course_id
       this.copytextarea = copylink
     },
     //删除弹窗

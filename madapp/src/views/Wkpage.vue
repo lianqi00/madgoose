@@ -105,8 +105,8 @@ export default {
       console.log(d)
       this.toupdata = d
     },
-    getheaderdate() {
-      console.log(d)
+    getheaderdate(d) {
+      // console.log(d)
       // this.active = d
       location.reload()
     },

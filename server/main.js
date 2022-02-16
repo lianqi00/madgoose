@@ -7,19 +7,19 @@ const { APP_PORT } = require('./config/config.default')
 const Koa = require("koa")
 const koaBody = require('koa-body')
 const cors = require('koa2-cors');
+const static = require('koa-static');
+const { historyApiFallback } = require('koa2-connect-history-api-fallback');
+
 //引入一些路由
 const router = require('./router')
 const path = require('path/posix')
-// const { allowedMethods } = require('./router')
-// const userRouter = require('./router/user.routes')
-// const courseRouter = require('./router/course.routes')
-// const howkRouter = require('./router/howk.routes')
+
 //实例化app
 const app = new Koa()
 //连接数据库
 require('./db/mgdb')
-
-app.use(cors());
+//跨域
+// app.use(cors());
 
 //注册一些中间件
 app.use(koaBody({
@@ -31,6 +31,11 @@ app.use(koaBody({
 }))
 app.use(router.routes())
 app.use(router.allowedMethods())
+
+//使用historyapi
+app.use(historyApiFallback({ whiteList: ['/api'] }))
+//设置web服务器目录
+app.use(static(path.join(__dirname, '../madapp/dist')));
 
 //监听服务器
 app.listen(APP_PORT, () => {

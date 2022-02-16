@@ -205,6 +205,7 @@ class UserController {
     async changePassWord(ctx, next) {
         // console.log(ctx.state.user);
         const password = ctx.request.body
+        // console.log(ctx.request.body);   
         const { _id } = ctx.state.user
         // console.log(nid, password)
         try {

@@ -9,10 +9,13 @@ import axios from "axios";
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-
+// console.log(Router);
+const baseURL = window.location.origin + '/api'
+console.log(baseURL);
 let config = {
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
-  baseURL: 'http://localhost:3002/api',
+  // baseURL: 'http://localhost:3002/api',
+  baseURL,
   timeout: 60 * 1000, // Timeout
   // withCredentials: true, // Check cross-site Access-Control
 };
@@ -56,23 +59,6 @@ _axios.interceptors.response.use(
   }
 );
 
-// Plugin.install = function (Vue, options) {
-//   Vue.axios = _axios;
-//   window.axios = _axios;
-//   Object.defineProperties(Vue.prototype, {
-//     axios: {
-//       get() {
-//         return _axios;
-//       }
-//     },
-//     $axios: {
-//       get() {
-//         return _axios;
-//       }
-//     },
-//   });
-// };
 
-// Vue.use(Plugin)
 
 Vue.prototype.$http = _axios

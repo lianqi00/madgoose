@@ -1,6 +1,6 @@
 <template>
   <div class="myfooter">
-    <span style="font-size: 10px">By laogoose</span>
+    <span style="font-size: 10px">By laolin</span>
     <span style="font-size: 10px"> ｜备案号：xxxxxxxxxx</span>
   </div>
 </template>
