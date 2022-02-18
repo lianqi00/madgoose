@@ -14,8 +14,8 @@ const baseURL = window.location.origin + '/api'
 // console.log(baseURL);
 let config = {
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
-  baseURL: 'http://localhost:3002/api',
-  // baseURL,
+  // baseURL: 'http://localhost:3002/api',
+  baseURL,
   timeout: 60 * 1000, // Timeout
   // withCredentials: true, // Check cross-site Access-Control
 };
