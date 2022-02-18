@@ -11,6 +11,7 @@ import Howkman from '../views/Howkman.vue'
 import Studentman from '../views/Studentman.vue'
 import Home from '../views/Home.vue'
 import Feedback from '../views/Feedbackman.vue'
+import notfount from '../views/notfount.vue'
 
 const routes = [
   {
@@ -32,6 +33,7 @@ const routes = [
     path: '/teacher',
     name: 'Teacher',
     component: Teacher,
+    redirect: '/teacher/courseman',
     children: [
       { path: 'courseman', component: Courseman },
       { path: 'howkman', component: Howkman },
@@ -44,6 +46,11 @@ const routes = [
     path: '/student/:id',
     name: 'Student',
     component: Student
+  },
+  {
+    path: '*',
+    name: 'notfount',
+    component: notfount
   }
 
 ]

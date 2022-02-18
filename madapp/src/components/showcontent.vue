@@ -73,41 +73,24 @@ export default {
       // console.log(this.$route.params.id)
       let id = this.$route.params.id
       let _id = this.$route.params.cid
-      this.$http.get('/course/getHowk', { params: { _id } }).then((res) => {
-        if (!res || !res.data.result) {
-          this.emptyetxt = '获取作业失败，请检查链接是否正确或完整。'
-          this.$emit('isbutshow', false)
-          return
-        }
-        // console.log(res)
-        const ayy = res.data.result
-        // let newayy = {}
-        ayy.forEach((ce) => {
-          ce.course_howk.forEach((he) => {
-            if (id === he._id) {
-              // const newayy = he
-              // console.log(newayy)
-              this.data = he || ''
-              // console.log(ce.course_name)
-              this.data.coursename = ce.course_name
-            }
-          })
+      this.$http
+        .get('/course/gethowkpublic', { params: { _id, id } })
+        .then((res) => {
+          if (!res || !res.data.result) {
+            this.emptyetxt = '获取作业失败，请检查链接是否正确或完整。'
+            this.$emit('isbutshow', false)
+            return
+          }
+          this.data = res.data.result
+          // console.log(this.data)
+          this.$emit('toUp', this.data)
+          this.empty = true
+          this.data.howk_deadline2 = this.data.howk_deadline
+          this.data.howk_deadline = moment(this.data.howk_deadline).format(
+            'MM月DD日 HH:mm'
+          )
+          // console.log(this.data)
         })
-        // console.log(this.data)
-        this.$emit('toUp', this.data)
-        this.empty = true
-        // this.tnow(res.data.result.howk_deadline)
-        // this.data = res.data.result || ''
-        this.data.howk_deadline2 = this.data.howk_deadline
-        // console.log(this.data)
-        // this.data.createdAt = moment(this.data.createdAt).format(
-        //   'MM月DD日 HH:mm'
-        // )
-        this.data.howk_deadline = moment(this.data.howk_deadline).format(
-          'MM月DD日 HH:mm'
-        )
-        // console.log(this.data)
-      })
       loading.close()
     },
     countdown(deadline) {

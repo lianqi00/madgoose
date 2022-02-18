@@ -66,6 +66,15 @@ export default {
             }
             // console.log(res)
             sessionStorage.token = res.data.result.token
+            if (res.data.result.userInfo.isoriginalpassword) {
+              this.$notify({
+                title: '提示',
+                message:
+                  '监测到你的密码仍然为初始密码，请尽快点击上方你的姓名，进行修改密码。',
+                type: 'warning',
+                offset: 50,
+              })
+            }
             if (res.data.result.userInfo.user_type === 1) {
               this.$router.push('/teacher')
             } else if (res.data.result.userInfo.user_type === 0) {

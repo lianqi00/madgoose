@@ -89,6 +89,7 @@ export default {
     //   console.log('@@@@@@@@@' + d)
     // })
     this.fetch()
+    // console.log(this.touUpdata)
     this.getuploadtoken()
   },
   data() {
@@ -129,6 +130,8 @@ export default {
       }
 
       const key = this.filenamest + file.name.replace(/.+\./, '.')
+
+      // const token = this.getuploadtoken()
       // console.log(key)
       var observable = qiniu.upload(
         file,
@@ -145,8 +148,8 @@ export default {
         },
         error: (errResult) => {
           // 失败报错信息
-          // console.log(errResult)
-          this.$message.error(errResult.data.error)
+          console.log(errResult)
+          // this.$message.error(errResult.data.error)
         },
         complete: (result) => {
           // 接收成功后返回的信息
@@ -166,6 +169,11 @@ export default {
               subTitle: '点击下方按钮填写反馈',
               btntext: '反馈',
               or: res.data,
+            }
+            const course = this.touUpdata
+            if (course.howk_done) {
+              this.resultip.btntext = '关闭'
+              this.resultip.subTitle = '点击下方按钮关闭弹窗'
             }
             this.$message.success(res.data.message)
           })
@@ -216,11 +224,19 @@ export default {
       }
       // return false
     },
-    getuploadtoken() {
-      this.$http.get('/user/fetchtoken').then((res) => {
+    async getuploadtoken() {
+      const course = this.touUpdata
+      if (course.howk_done) {
+        // console.log('存在，需要重传')
+        const res = await this.$http.get('/user/getOverWriteToken', {
+          params: { key: course.howk_done.key },
+        })
         this.uploadtoken = res.data.result
-        // console.log(this.uploadtoken)
-      })
+      } else {
+        const res = await this.$http.get('/user/fetchtoken')
+        this.uploadtoken = res.data.result
+      }
+      // console.log(this.uploadtoken)
     },
     handleExceed(files, fileList) {
       this.$message.warning('只能上传1个文件')

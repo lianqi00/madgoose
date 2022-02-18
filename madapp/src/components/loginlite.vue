@@ -57,7 +57,10 @@ export default {
   },
   methods: {
     gotostudent(id) {
-      this.$router.push('/student/' + id)
+      // console.log(id)
+      if (id) return this.$router.push('/student/' + id)
+      this.$router.push('/login')
+      sessionStorage.clear()
     },
     async login() {
       if (!this.form.user_number || !this.form.password) {
@@ -80,8 +83,20 @@ export default {
       //判断用户是否为本课程学生
       const user_course = res.data.result.userInfo.user_course
       const userid = res.data.result.userInfo._id
+      const usertype = res.data.result.userInfo.user_type
       const cid = this.$route.params.cid
-      // console.log(user_course, cid)
+      // console.log(res.data.result.userInfo)
+      if (usertype) {
+        this.resultshow = true
+        this.resultip = {
+          icon: 'error',
+          title: '错误提示',
+          subTitle: '教师无法上传作业，请登录教师端后台。',
+          btntext: '登录',
+          userid: '',
+        }
+        return
+      }
       if (user_course !== cid) {
         this.resultshow = true
         this.resultip = {

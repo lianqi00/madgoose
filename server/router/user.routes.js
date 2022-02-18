@@ -18,18 +18,20 @@ const {
 //引入其他中间件
 const { islogin } = require('../middleware/auth.middleware')
 const { pwCrypt } = require('../middleware/user.middleware')
-const { qiniuToken } = require('../middleware/qiniu.middleware')
+const { qiniuToken, getOverWriteToken } = require('../middleware/qiniu.middleware')
 
 
 
 //登录
 router.post('/login', login) //不判断是否登录
-//获取全部用户信息（只有管理员和老师能用）
+//获取全部用户信息
 router.get('/', islogin, getUserInfo)
 //获取用户信息，根据token返回信息
 router.get('/fetch', islogin, getFetchInfo)
 //获取上传token
 router.get('/fetchtoken', islogin, qiniuToken)
+//获取重复上传token
+router.get('/getoverwritetoken', islogin, getOverWriteToken)
 //添加用户
 router.post('/register', islogin, pwCrypt, register)
 //修改指定用户信息（除密码）

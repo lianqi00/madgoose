@@ -146,7 +146,12 @@ class UserController {
                 }
                 return
             }
+            //判断是否是初始密码
             const { password, createdAt, updatedAt, ...userInfo } = isUserExi
+            const isoriginalpassword = bcrypt.compareSync(isUserExi.user_number, password)
+            if (isoriginalpassword) userInfo.isoriginalpassword = isoriginalpassword
+
+
             // console.log(isUserExi);
             const token = jwt.sign(userInfo, JWT_SECRET, { expiresIn: '1d' })
             ctx.body = {

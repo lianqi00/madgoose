@@ -37,6 +37,7 @@ class Hk_doneController {
             .setOptions({ new: true })
         const hdloadhowk = await Howk
             .findByIdAndUpdate({ _id: hk_done_wk }, { $addToSet: { howk_done: hdupdate._id } })
+            .setOptions({ new: true })
         // console.log(hdloadhowk, hdupdate);
         ctx.body = {
             code: 0,

@@ -1,6 +1,6 @@
 <template>
   <div class="student">
-    <el-dialog title="提示" :visible.sync="islookshow" width="60%" center>
+    <el-dialog title="查看" :visible.sync="islookshow" width="60%" center>
       <el-descriptions title="作业信息" :column="3">
         <el-descriptions-item label="作业名称">{{
           workinfo.howk_name
@@ -22,6 +22,18 @@
         >
         <el-button type="primary" @click="islookshow = false">关闭</el-button>
       </span>
+    </el-dialog>
+
+    <el-dialog
+      title="重新上传"
+      :visible.sync="overuploadshow"
+      width="70%"
+      :destroy-on-close="true"
+    >
+      <uploadlite
+        :touUpdata="toupdata"
+        @upLoadtoWkpage="overuploadshow = false"
+      ></uploadlite>
     </el-dialog>
 
     <el-container style="height: 100vh">
@@ -52,13 +64,17 @@
             style="width: 100%"
             v-loading="loading"
           >
-            <el-table-column label="作业名称" prop="howk_name">
+            <el-table-column label="作业名称" min-width="120" prop="howk_name">
             </el-table-column>
-            <el-table-column label="创建时间" prop="createdAt2">
+            <el-table-column label="创建时间" min-width="100" prop="createdAt2">
             </el-table-column>
-            <el-table-column label="截止时间" prop="howk_deadline2">
+            <el-table-column
+              label="截止时间"
+              min-width="100"
+              prop="howk_deadline2"
+            >
             </el-table-column>
-            <el-table-column label="剩余时间" min-width="120">
+            <el-table-column label="剩余时间" min-width="110">
               <template slot-scope="scope">
                 <el-tag
                   effect="dark"
@@ -107,17 +123,23 @@
                 />
               </template>
               <template #default="scope">
-                <el-button size="mini" @click="handleLook(scope.row)">
-                  查看
-                </el-button>
-
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  content="查看作业要求,下载已上传作业"
+                  placement="top-start"
+                >
+                  <el-button size="mini" @click="handleLook(scope.row)">
+                    查看
+                  </el-button>
+                </el-tooltip>
                 <el-tooltip
                   class="item"
                   effect="dark"
                   :content="
                     scope.row.howk_done2 === '未完成'
-                      ? '点击上传会自动跳转到交作业链接，并需要重新登录'
-                      : '点击重传会覆盖之前作业'
+                      ? '自动跳转到交作业链接,需要重新登录'
+                      : '覆盖之前作业'
                   "
                   placement="top-start"
                 >
@@ -145,12 +167,15 @@
 import moment from 'moment'
 import myheader from '../components/myheader.vue'
 import myfooter from '../components/myfooter.vue'
+import Uploadlite from '../components/uploadlite.vue'
 export default {
   name: 'student',
-  components: { myheader, myfooter },
+  components: { myheader, myfooter, Uploadlite },
   // props:[],
   data() {
     return {
+      toupdata: {},
+      overuploadshow: false,
       loading: true,
       userdata: '',
       courseinfo: '',
@@ -171,7 +196,7 @@ export default {
   methods: {
     fetch() {
       this.$http.get('/user/').then((res) => {
-        // console.log(res.data.result[0])
+        // console.log(res.data.result)
         const { user_course, ...other } = res.data.result[0]
         this.userdata = other
         // console.log(user_course.course_howk)
@@ -195,7 +220,7 @@ export default {
     //格式化时间
     formatdate(val) {
       if (!val) return '无'
-      return moment(val).format('MM月DD日 HH:mm')
+      return moment(val).format('MM.DD.HH:mm')
     },
     // 确定作业是否完成
     workisdone(val) {
@@ -259,6 +284,12 @@ export default {
       if (row.howk_done2 === '已完成') {
         //完成就弹出重新上传对话框
         // console.log('走完成的代码了')
+        this.overuploadshow = true
+        // console.log(row, this.courseinfo)
+        const newdata = row
+        newdata.coursename = this.courseinfo.course_name
+        // console.log(newdata)
+        this.toupdata = newdata
         return
       }
       //未完成就跳转到wkpage
@@ -281,14 +312,14 @@ export default {
       const m = parseInt((a % 3600) / 60)
       const h = parseInt((a % 86400) / 3600)
       const d = parseInt(a / 86400)
-      const text = d + '天' + h + '小时' + m + '分钟'
-      if (d <= 1) {
-        this.tagtype = 'danger'
-      } else if (d <= 2) {
-        this.tagtype = 'warning'
-      } else {
-        this.tagtype = 'success'
-      }
+      const text = d + '天' + h + '小时' + m + '分'
+      // if (d <= 1) {
+      //   this.tagtype = 'danger'
+      // } else if (d <= 2) {
+      //   this.tagtype = 'warning'
+      // } else {
+      //   this.tagtype = 'success'
+      // }
       return text
     },
   },

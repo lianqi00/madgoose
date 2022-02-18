@@ -3,9 +3,6 @@ import App from './App.vue'
 import router from './router'
 import './plugins/element.js'
 import './plugins/axios'
-import VueCoreVideoPlayer from 'vue-core-video-player'
-
-Vue.use(VueCoreVideoPlayer)
 
 Vue.config.productionTip = false
 Vue.prototype.bus = new Vue()

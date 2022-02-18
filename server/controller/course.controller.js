@@ -56,10 +56,11 @@ class CourseController {
         }
 
     }
-    //查询课程
+    //查询课程作业
     async getHowk(ctx, next) {
-        const fil = ctx.query || {}
-        const result = await Course.find({ fil }).populate({
+        // const { _id, id } = ctx.query || {}
+        // console.log(id);
+        const result = await Course.find({}).populate({
             path: "course_howk", populate: {
                 path: 'howk_done', populate: {
                     path: 'hk_done_sid'
@@ -72,6 +73,31 @@ class CourseController {
             result
         }
     }
+    //查询课程作业公开
+    async gethowkpublic(ctx, next) {
+        const { _id, id } = ctx.query
+        const result = await Course.find({ _id }).populate('course_howk', '-howk_done -howk_feedback')
+        var data = {}
+        for (let i = 0; i < result.length; i++) {
+            const e = result[i];
+            for (let ii = 0; ii < e.course_howk.length; ii++) {
+                const ee = e.course_howk[ii];
+                if (id === ee._id.toString()) {
+                    data = ee.toObject()
+                    data.coursename = e.course_name
+                }
+            }
+        }
+        ctx.body = {
+            code: 0,
+            message: '获取作业成功',
+            result: data
+        }
+    }
+
+
+
+
     //删除课程
     async deleCourse(ctx, next) {
         // console.log(1);

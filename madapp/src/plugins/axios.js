@@ -47,7 +47,7 @@ _axios.interceptors.response.use(
       message: error.response.data.message,
       type: 'error'
     })
-    console.log(error.response.status);
+    // console.log(error.response.status);
     if (error.response.status === 401) {
       // console.log(Vue.prototype.$router);
       // Vue.prototype.$router.push('/login')

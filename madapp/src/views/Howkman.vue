@@ -86,7 +86,7 @@
       >
     </el-dialog>
 
-    <el-dialog :visible.sync="seeworkshow" fullscreen :destroy-on-close="true">
+    <el-dialog :visible.sync="seeworkshow" fullscreen>
       <!-- text-align: center -->
       <div style="width: 1000px; margin: 0 auto">
         <el-carousel
@@ -114,7 +114,21 @@
           </el-carousel-item>
         </el-carousel>
         <div class="player-container" style="width: 700px; margin: 0 auto">
-          <vue-core-video-player :src="videosrc"></vue-core-video-player>
+          <el-image
+            v-if="filetype === 'image/jpeg'"
+            style="width: 100%"
+            :src="imgurl"
+            fit="fill"
+          ></el-image>
+          <video-player
+            v-if="filetype === 'video/mp4'"
+            class="video-player"
+            ref="videoPlayer"
+            :playsinline="true"
+            :options="playerOptions"
+          >
+          </video-player>
+          <el-button v-else @click="filedownload()">下载</el-button>
         </div>
         <div style="width: 300px; margin: 0 auto">
           <p>
@@ -131,7 +145,7 @@
           <span>
             <el-button @click="carprev()">上一个</el-button>
             <el-button @click="carnext()">下一个</el-button>
-            <el-button type="primary" @click="seeworkshow = false"
+            <el-button type="primary" @click="handleseeworkclose"
               >关闭</el-button
             >
           </span>
@@ -252,6 +266,8 @@
 </template>
 
 <script>
+import 'video.js/dist/video-js.css'
+import { videoPlayer } from 'vue-video-player'
 import moment from 'moment'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
@@ -264,16 +280,45 @@ export default {
   components: {
     quillEditor,
     PureVueChart,
+    videoPlayer,
   },
   created() {
     this.fetch()
   },
   data() {
     return {
+      filetype: '',
+      fileurl: '',
+      imgurl: '',
       lookfeedbackshow: false,
       feedbackdate: [],
       rate: 0,
-      videosrc: '#',
+      //播放器
+      videosrc: '',
+      playerOptions: {
+        playbackRates: [0.5, 1.0, 1.5, 2.0], // 可选的播放速度
+        autoplay: true, // 如果为true,浏览器准备好时开始回放。
+        muted: false, // 默认情况下将会消除任何音频。
+        loop: false, // 是否视频一结束就重新开始。
+        preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+        language: 'zh-CN',
+        aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+        fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+        sources: [
+          {
+            type: 'video/mp4', // 类型
+            src: '', // url地址
+          },
+        ],
+        poster: '', // 封面地址
+        notSupportedMessage: '此视频暂无法播放，请稍后再试', // 允许覆盖Video.js无法播放媒体源时显示的默认信息。
+        controlBar: {
+          timeDivider: true, // 当前时间和持续时间的分隔符
+          durationDisplay: true, // 显示持续时间
+          remainingTimeDisplay: false, // 是否显示剩余时间功能
+          fullscreenToggle: true, // 是否显示全屏按钮
+        },
+      },
       nowdex: 1,
       totaldex: 10,
       howk_donelooking: {},
@@ -381,6 +426,21 @@ export default {
     }
   },
   methods: {
+    filedownload() {
+      let link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = this.fileurl
+      // 获取文件名
+      // download 属性定义了下载链接的地址而不是跳转路径
+      // const strfilename = this.userdata.user_number + this.userdata.user_name
+      link.setAttribute('download', '')
+      document.body.appendChild(link)
+      link.click()
+    },
+    handleseeworkclose() {
+      if (this.filetype === 'video/mp4') this.$refs.videoPlayer.player.pause()
+      this.seeworkshow = false
+    },
     //处理反馈答案
     getpoints(v, vv) {
       // console.log(v)
@@ -478,11 +538,18 @@ export default {
       this.fetch()
     },
     //获取作业链接
-    async getvideosrc(key) {
+    async getfilesrc(key) {
       const res = await this.$http.get('/hk_done/download', { params: { key } })
       if (!res || !res.data.result) return
-      this.videosrc = res.data.result + ''
-      // console.log(this.videosrc)
+      if (this.filetype === 'image/jpeg') {
+        this.imgurl = res.data.result
+      } else if (this.filetype === 'video/mp4') {
+        this.playerOptions.sources[0].src = res.data.result
+      }
+      this.fileurl = res.data.result
+      // console.log(this.officeurl)
+
+      this.seeworkshow = true
     },
     //格式化日期
     formatdate(v) {
@@ -491,7 +558,7 @@ export default {
     //跳转作业
     carouselchange(i, _) {
       this.howk_donelooking = this.howk_done[i]
-      this.getvideosrc(this.howk_done[i].key)
+      this.getfilesrc(this.howk_done[i].key)
       this.nowdex = i + 1
       // console.log(this.howk_donelooking)
       // console.log(this.howk_donelooking.hk_done_score)
@@ -644,19 +711,24 @@ export default {
         // console.log(this.tableData)
       })
     },
+    //判断是那种文件并是否显示当前组件
+
     //点击查看作业
     handleClick(row) {
+      // console.log(row.howk_uptype)
+      // this.isshowthis(row.howk_uptype)
       this.howk_done = row.howk_done
+      this.filetype = row.howk_uptype[0]
+      // console.log(this.filetype)
       this.nowdex = 1
       this.totaldex = row.howk_done.length
       this.howk_donelooking = this.howk_done[0]
-      // console.log(this.howk_donelooking.hk_done_score)
+      // console.log(this.howk_donelooking)
       this.rate = 0
       if (this.howk_donelooking.hk_done_score) {
         this.rate = this.howk_donelooking.hk_done_score
       }
-      this.getvideosrc(this.howk_done[0].key)
-      this.seeworkshow = true
+      this.getfilesrc(this.howk_done[0].key)
     },
     //点击添加作业按钮
     addwork() {
