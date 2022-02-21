@@ -5,10 +5,14 @@
 const { APP_PORT } = require('./config/config.default')
 //引入一些库
 const Koa = require("koa")
+const https = require('https')
+const fs = require('fs')
+const sslify = require('koa-sslify').default
 const koaBody = require('koa-body')
 const cors = require('koa2-cors');
 const static = require('koa-static');
 const { historyApiFallback } = require('koa2-connect-history-api-fallback');
+
 
 //引入一些路由
 const router = require('./router')
@@ -31,6 +35,13 @@ app.use(koaBody({
 }))
 app.use(router.routes())
 app.use(router.allowedMethods())
+app.use(sslify())
+
+// SSL options
+var options = {
+  key: fs.readFileSync(path.join(__dirname, './myssl/laogoose.com.key')),  //ssl文件路径 
+  cert: fs.readFileSync(path.join(__dirname, './myssl/laogoose.com.crt'))  //ssl文件路径
+}
 
 //使用historyapi
 app.use(historyApiFallback({ whiteList: ['/api'] }))
@@ -38,6 +49,11 @@ app.use(historyApiFallback({ whiteList: ['/api'] }))
 app.use(static(path.join(__dirname, '../madapp/dist')));
 
 //监听服务器
-app.listen(APP_PORT, () => {
-  console.log("服务器已启动，地址为：http://localhost:" + APP_PORT);
-})
+
+
+https.createServer(options, app.callback()).listen(APP_PORT, () => {
+  console.log("服务器已启动，地址为：https://localhost:" + APP_PORT)
+});
+// app.listen(APP_PORT, () => {
+//   console.log("服务器已启动，地址为：https://localhost:" + APP_PORT);
+// })
