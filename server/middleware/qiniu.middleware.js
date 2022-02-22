@@ -35,20 +35,20 @@ class QiniuMiddleware {
         var privateBucketDomain = BUCKETDOMAIN;
         var deadline = parseInt(Date.now() / 1000) + 3600; // 1小时过期
         var privateDownloadUrl = bucketManager.privateDownloadUrl(privateBucketDomain, key, deadline);
-        var cdnManager = new qiniu.cdn.CdnManager(mac);
-        var urlsToRefresh = [
-            privateDownloadUrl
-        ];
-        cdnManager.refreshUrls(urlsToRefresh, function (err, respBody, respInfo) {
-            if (err) {
-                throw err;
-            }
-            // console.log(respInfo.statusCode);
-            if (respInfo.statusCode == 200) {
-                // console.log(respBody);
+        // var cdnManager = new qiniu.cdn.CdnManager(mac);
+        // var urlsToRefresh = [
+        //     privateDownloadUrl
+        // ];
+        // cdnManager.refreshUrls(urlsToRefresh, function (err, respBody, respInfo) {
+        //     if (err) {
+        //         throw err;
+        //     }
+        //     // console.log(respInfo.statusCode);
+        //     if (respInfo.statusCode == 200) {
+        //         // console.log(respBody);
 
-            }
-        });
+        //     }
+        // });
         // console.log(privateDownloadUrl);
         ctx.body = {
             code: 0,
