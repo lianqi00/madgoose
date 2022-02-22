@@ -60,7 +60,7 @@ var options = {
 
 //监听服务器
 https.createServer(options, app.callback()).listen(APP_PORT, () => {
-  console.log("服务器已启动,多扣号为:" + APP_PORT)
+  console.log("服务器已启动,端口号为:" + APP_PORT)
 });
 // app.listen(APP_PORT, () => {
 //   console.log("服务器已启动，地址为：https://localhost:" + APP_PORT);

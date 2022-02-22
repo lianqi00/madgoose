@@ -195,7 +195,9 @@
     </div>
     <div class="section footer copyright wf-section">
       <div class="w-container">
-        <div class="text-block">By laolin ｜备案号：xxxxxxxxxx</div>
+        <div class="text-block">
+          <myfooter />
+        </div>
       </div>
     </div>
   </div>
@@ -204,7 +206,9 @@
 
 <script>
 import '../assets/css/homeindex.css'
+import myfooter from '../components/myfooter.vue'
 export default {
+  components: { myfooter },
   name: 'home',
   data() {
     return {
