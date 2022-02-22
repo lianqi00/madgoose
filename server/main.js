@@ -60,9 +60,12 @@ var options = {
 
 //监听服务器
 https.createServer(options, app.callback()).listen(APP_PORT, () => {
-  console.log("服务器已启动，地址为：https://localhost:" + APP_PORT)
+  console.log("服务器已启动,多扣号为:" + APP_PORT)
 });
 // app.listen(APP_PORT, () => {
 //   console.log("服务器已启动，地址为：https://localhost:" + APP_PORT);
 // })
-// http.createServer(app.callback()).listen(80);
+http.createServer((req, res) => {
+  res.writeHead(301, { 'Location': 'https://laogoose.com' })
+  res.end()
+}).listen(80)
