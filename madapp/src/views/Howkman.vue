@@ -167,8 +167,8 @@
               :height="200"
               :show-x-axis="true"
               :show-y-axis="true"
+              :show-values="true"
             />
-            <!-- :show-values="true" -->
 
             <el-table
               v-if="!item.feedback_option.length"
